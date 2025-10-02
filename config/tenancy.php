@@ -17,7 +17,7 @@ return [
      * Only relevant if you're using the domain or subdomain identification middleware.
      */
     'central_domains' => [
-        'full-multi-platform-core.test',
+        'service.kamila.tw',
     ],
 
     /**

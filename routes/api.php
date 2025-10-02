@@ -14,6 +14,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+/**
+ * Line Webhook
+ */
+Route::post('/line/webhook', [\App\Http\Controllers\Line\WebhookController::class, 'handle']);
+
+/**
+ * Line LIFF Bind
+ */
+Route::get('/line/liff/bind',  [\App\Http\Controllers\Line\LiffBindController::class, 'form']);
+Route::post('/line/liff/bind', [\App\Http\Controllers\Line\LiffBindController::class, 'submit']);
