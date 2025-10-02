@@ -6,6 +6,7 @@ use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Database\Seeders\TenantPermissionSeeder;
 
 class tenantService
 {
@@ -35,6 +36,9 @@ class tenantService
               'password'  => Hash::make($attributes['password']),
               'parameter' => ['isAdmin' => true]
             ]);
+
+            // 執行租戶 seeder
+            $this->runTenantPermissionSeeder();
           });
 
           return $tenant;
@@ -117,5 +121,14 @@ class tenantService
         } while (Tenant::where('id', $tenantId)->exists());
 
         return $tenantId;
+    }
+
+    /**
+     * 執行租戶 seeder
+     */
+    private function runTenantPermissionSeeder(): void
+    {
+        $seeder = new TenantPermissionSeeder();
+        $seeder->run();
     }
 }

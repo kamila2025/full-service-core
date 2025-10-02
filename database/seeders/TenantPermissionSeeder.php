@@ -20,9 +20,6 @@ class TenantPermissionSeeder extends Seeder
         // 建立權限
         $permissions = [
             'manage' => '所有權限',
-            'products.interface' => '商品介面',
-            'products' => '商品管理',
-            'categories' => '分類管理',
             'settings.interface' => '設定介面',
             'users' => '員工管理',
             'roles' => '角色管理',
@@ -41,9 +38,6 @@ class TenantPermissionSeeder extends Seeder
                 'name' => '管理員',
                 'permissions' => [
                     'manage',
-                    'products.interface',
-                    'products',
-                    'categories',
                     'settings.interface',
                     'users',
                     'roles',
@@ -63,10 +57,10 @@ class TenantPermissionSeeder extends Seeder
             }
         }
 
-        // 為第一個使用者分配管理員角色
-        $firstUser = User::first();
-        if ($firstUser) {
-            $firstUser->assignRole('admin');
+        // 為租戶管理員分配管理員角色
+        $adminUser = User::where('parameter->isAdmin', true)->first();
+        if ($adminUser) {
+            $adminUser->assignRole('admin');
         }
     }
 }

@@ -8,30 +8,6 @@
       "permission": "manage"
     },
     {
-      "menuHeader": "商品管理",
-      "permission": "products.interface"
-    },
-    {
-      "name": "商品管理",
-      "icon": "menu-icon tf-icons bx bxs-purchase-tag",
-      "slug": ["tenant.products", "tenant.categories"],
-      "permission": "products.interface",
-      "submenu": [
-        {
-          "url": "admin/products",
-          "name": "商品管理",
-          "slug": "tenant.products.index",
-          "permission": "products"
-        },
-        {
-          "url": "admin/categories",
-          "name": "商品分類",
-          "slug": "tenant.categories.index",
-          "permission": "categories"
-        }
-      ]
-    },
-    {
       "menuHeader": "系統設定"
     },
     {
