@@ -1,0 +1,52 @@
+{
+  "menu": [
+    {
+      "url": "admin/dashboard",
+      "name": "主控台",
+      "icon": "menu-icon tf-icons bx bx-home-circle",
+      "slug": "tenant.dashboard.index",
+      "permission": "manage"
+    },
+    {
+      "menuHeader": "商品管理",
+      "permission": "products.interface"
+    },
+    {
+      "name": "商品管理",
+      "icon": "menu-icon tf-icons bx bxs-purchase-tag",
+      "slug": ["tenant.products", "tenant.categories"],
+      "permission": "products.interface",
+      "submenu": [
+        {
+          "url": "admin/products",
+          "name": "商品管理",
+          "slug": "tenant.products.index",
+          "permission": "products"
+        },
+        {
+          "url": "admin/categories",
+          "name": "商品分類",
+          "slug": "tenant.categories.index",
+          "permission": "categories"
+        }
+      ]
+    },
+    {
+      "menuHeader": "系統設定"
+    },
+    {
+      "url": "admin/users",
+      "icon": "menu-icon tf-icons bx bxs-user",
+      "name": "員工管理",
+      "slug": "tenant.users.index",
+      "permission": "users"
+    },
+    {
+      "url": "admin/roles",
+      "icon": "menu-icon tf-icons bx bxs-user-plus",
+      "name": "角色管理",
+      "slug": "tenant.roles.index",
+      "permission": "roles"
+    }
+  ]
+}

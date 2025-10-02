@@ -1,0 +1,94 @@
+$(function () {
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+
+  const dataTables = $('.role-datatable');
+  const apiUrl = `/${tenant}/admin/roles`;
+
+  if (dataTables.length) {
+    var table = dataTables.DataTable({
+      processing: true,
+      serverSide: true,
+      paging: true,
+      info: true,
+      fixedColumns: false,
+      searching: false,
+      ajax: {
+        url: apiUrl,
+        type: 'GET',
+        error: function (xhr, error, thrown) {
+          Swal.fire({
+            icon: 'error',
+            title: '資料載入錯誤',
+            text: '無法載入資料，請重新整理頁面',
+            confirmButtonText: '確定'
+          });
+        }
+      },
+      columns: [{ data: 'role_name' }, { data: 'role_permissions' }, { data: null }],
+      columnDefs: [
+        {
+          targets: 1,
+          render: function (data, type, full, meta) {
+            let $permissions = '';
+
+            for (let i = 0; i < data.length; i++) {
+              var val = data[i];
+              $permissions += '<span class="badge  bg-label-primary m-1">' + val + '</span>';
+            }
+
+            return '<span class="text-nowrap">' + $permissions + '</span>';
+          }
+        },
+        {
+          targets: -1,
+          orderable: false,
+          render: function (data, type, full, meta) {
+            return `
+              <a href="${apiUrl}/${full.id}/edit" class="btn btn-sm btn-icon">
+                <i class="bx bx-edit"></i>
+              </a>
+            `;
+          }
+        }
+      ],
+      dom:
+        '<"row mx-1"' +
+        '<"col-sm-12 col-md-3" l>' +
+        '<"col-sm-12 col-md-9"<"dt-action-buttons text-xl-end text-lg-start text-md-end text-start d-flex align-items-center justify-content-md-end justify-content-center flex-wrap me-1"<"me-3"f>rB>>' +
+        '>t' +
+        '<"row mx-2"' +
+        '<"col-sm-12 col-md-6"i>' +
+        '<"col-sm-12 col-md-6"p>' +
+        '>',
+      displayLength: 10, // 每頁顯示幾筆
+      lengthMenu: [10, 25, 50, 75, 100], // 顯示選單中的選項
+      language: {
+        processing: '處理中...',
+        loadingRecords: '載入中...',
+        lengthMenu: '顯示 _MENU_ 項結果',
+        zeroRecords: '沒有符合的結果',
+        info: '顯示第( _START_ ~ _END_ )項結果【共 _TOTAL_ 筆】',
+        infoEmpty: '顯示第 0 至 0 項結果，共 0 項',
+        infoFiltered: '(從 _MAX_ 項結果中過濾)',
+        infoPostFix: '',
+        search: '搜尋:',
+        searchPlaceholder: '關鍵字..',
+        paginate: {
+          first: '第一頁',
+          previous: '上一頁',
+          next: '下一頁',
+          last: '最後一頁'
+        },
+        aria: {
+          sortAscending: ': 升冪排列',
+          sortDescending: ': 降冪排列'
+        }
+      },
+      buttons: []
+    });
+  }
+});

@@ -1,0 +1,16 @@
+{
+  "menu": [
+    {
+      "url": "admin/dashboard",
+      "name": "主控台",
+      "icon": "menu-icon tf-icons bx bx-home-circle",
+      "slug": "admin.dashboard.index"
+    },
+    {
+      "url": "admin/tenants",
+      "icon": "menu-icon tf-icons bx bxs-business",
+      "name": "租戶管理",
+      "slug": "admin.tenants.index"
+    }
+  ]
+}
