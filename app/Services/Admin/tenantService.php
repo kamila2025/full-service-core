@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Database\Seeders\TenantPermissionSeeder;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\Admin\TenantExport;
 
 class tenantService
 {
@@ -170,6 +172,21 @@ class tenantService
     }
 
     return $query;
+  }
+
+  /**
+   * 匯出租戶資料
+   */
+  public function exportTenants(Request $request)
+  {
+    $query = $this->searchTenant($request);
+    $tenants = $query->orderBy('sort', 'asc')->get();
+
+    // 生成檔案名稱
+    $timestamp = now()->format('Y-m-d');
+    $filename = "租戶資料_{$timestamp}.xlsx";
+
+    return Excel::download(new TenantExport($tenants), $filename);
   }
 
   /**

@@ -47,6 +47,18 @@ class AdminTenantController extends Controller
   }
 
   /**
+   * 匯出租戶資料
+   */
+  public function export(Request $request)
+  {
+    try {
+      return $this->tenantService->exportTenants($request);
+    } catch (\Throwable $e) {
+      return $this->errorResponse('匯出失敗，請聯絡管理者', null, 500);
+    }
+  }
+
+  /**
    * 顯示創建租戶表單
    */
   public function create()

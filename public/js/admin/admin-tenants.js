@@ -17,8 +17,9 @@ $(function () {
   const searchExpireEndDate = $('#searchExpireEndDate');
   const searchCreatedStartDate = $('#searchCreatedStartDate');
   const searchCreatedEndDate = $('#searchCreatedEndDate');
-  const searchBtn = $('#searchBtn');
   const resetBtn = $('#resetBtn');
+  const searchBtn = $('#searchBtn');
+  const exportBtn = $('#exportBtn');
 
   if (dataTables.length) {
     var table = dataTables.DataTable({
@@ -160,11 +161,6 @@ $(function () {
     });
   }
 
-  // 搜尋事件
-  searchBtn.on('click', function () {
-    table.draw();
-  });
-
   // 重置事件
   resetBtn.on('click', function () {
     searchId.val('').trigger('change');
@@ -176,6 +172,30 @@ $(function () {
     searchCreatedStartDate.val('');
     searchCreatedEndDate.val('');
     table.draw();
+  });
+
+  // 搜尋事件
+  searchBtn.on('click', function () {
+    table.draw();
+  });
+
+  // 匯出事件
+  exportBtn.on('click', function () {
+    const params = $.param({
+      searchId: searchId.val(),
+      searchName: searchName.val(),
+      searchStatus: searchStatus.val(),
+      searchUser: searchUser.val(),
+      searchExpireStartDate: searchExpireStartDate.val(),
+      searchExpireEndDate: searchExpireEndDate.val(),
+      searchCreatedStartDate: searchCreatedStartDate.val(),
+      searchCreatedEndDate: searchCreatedEndDate.val()
+    });
+
+    const queryString = new URLSearchParams(params).toString();
+    const exportUrl = `${apiUrl}/export?${queryString}`;
+
+    window.location.href = exportUrl;
   });
 
   // 刪除租戶事件
