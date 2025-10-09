@@ -21,13 +21,16 @@ class tenantService
     try {
       // 創建租戶
       $tenant = Tenant::create([
-        'id'              => $attributes['id'],
-        'name'            => $attributes['name'],
-        'user_id'         => Auth::user()->id,
-        'email'           => $attributes['email'],
-        'password'        => Hash::make($attributes['password']),
-        'expire_date'     => $attributes['expire_date'],
-        'status'          => $attributes['status'],
+        'id'                    => $attributes['id'],
+        'name'                  => $attributes['name'],
+        'user_id'               => Auth::user()->id,
+        'email'                 => $attributes['email'],
+        'password'              => Hash::make($attributes['password']),
+        'expire_date'           => $attributes['expire_date'],
+        'status'                => $attributes['status'],
+        'channel_id'            => $attributes['line_channel_id'],
+        'channel_secret'        => $attributes['line_channel_secret'],
+        'channel_access_token'  => $attributes['line_channel_access_token'],
       ]);
 
       // 創建租戶管理員
@@ -59,12 +62,15 @@ class tenantService
       $tenant = Tenant::findOrFail($id);
 
       $updateData = [
-        'id'              => $attributes['id'],
-        'name'            => $attributes['name'],
-        'user_id'         => Auth::user()->id,
-        'email'           => $attributes['email'],
-        'expire_date'     => $attributes['expire_date'],
-        'status'          => $attributes['status'],
+        'id'                    => $attributes['id'],
+        'name'                  => $attributes['name'],
+        'user_id'               => Auth::user()->id,
+        'email'                 => $attributes['email'],
+        'expire_date'           => $attributes['expire_date'],
+        'status'                => $attributes['status'],
+        'channel_id'            => $attributes['line_channel_id'],
+        'channel_secret'        => $attributes['line_channel_secret'],
+        'channel_access_token'  => $attributes['line_channel_access_token'],
       ];
 
       // 只有在有密碼時才更新密碼

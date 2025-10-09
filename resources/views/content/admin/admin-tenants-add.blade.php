@@ -54,61 +54,88 @@
                 <button type="button" id="saveButton" class="btn btn-primary">儲存</button>
             </div>
         </div>
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <form id="adminTenantForm" class="row g-3">
-                            <input type='hidden' id="tenant_id" name='tenant_id' value="{{ $tenant->id ?? '' }}">
-                            <div class="col-md-6 mb-2">
-                                <label for="id" class="form-label">租戶ID</label>
-                                <input type="text" id="id" name="id" class="form-control"
-                                    value="{{ isset($tenant) ? $tenant->id : $tenantId }}"
-                                    {{ isset($tenant) ? 'readonly' : '' }}>
-                            </div>
+        <form id="adminTenantForm">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <input type='hidden' id="tenant_id" name='tenant_id' value="{{ $tenant->id ?? '' }}">
+                                <div class="col-md-6 mb-2">
+                                    <label for="id" class="form-label">租戶ID</label>
+                                    <input type="text" id="id" name="id" class="form-control"
+                                        value="{{ isset($tenant) ? $tenant->id : $tenantId }}"
+                                        {{ isset($tenant) ? 'readonly' : '' }}>
+                                </div>
 
-                            <div class="col-md-6 mb-2">
-                                <label for="name" class="form-label">租戶名稱</label>
-                                <input type="text" id="name" name="name" class="form-control"
-                                    value="{{ isset($tenant) ? $tenant->name : $tenantId }}">
-                            </div>
+                                <div class="col-md-6 mb-2">
+                                    <label for="name" class="form-label">租戶名稱</label>
+                                    <input type="text" id="name" name="name" class="form-control"
+                                        value="{{ isset($tenant) ? $tenant->name : $tenantId }}">
+                                </div>
 
-                            <div class="col-md-6 mb-2">
-                                <label for="email" class="form-label">租戶信箱</label>
-                                <input type="text" id="email" name="email" class="form-control"
-                                    value="{{ isset($tenant) ? $tenant->email : '' }}">
-                            </div>
+                                <div class="col-md-6 mb-2">
+                                    <label for="email" class="form-label">租戶信箱</label>
+                                    <input type="text" id="email" name="email" class="form-control"
+                                        value="{{ isset($tenant) ? $tenant->email : '' }}">
+                                </div>
 
-                            <div class="col-md-6 mb-2 form-password-toggle">
-                                <label for="password" class="form-label">租戶密碼</label>
-                                <div class="input-group input-group-merge">
-                                    <input type="password" id="password" class="form-control" name="password"
-                                        value="" />
-                                    <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                                <div class="col-md-6 mb-2 form-password-toggle">
+                                    <label for="password" class="form-label">租戶密碼</label>
+                                    <div class="input-group input-group-merge">
+                                        <input type="password" id="password" class="form-control" name="password"
+                                            value="" />
+                                        <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 mb-2">
+                                    <label for="expire_date" class="form-label">到期時間</label>
+                                    <input type="text" class="form-control" id="expire_date" name="expire_date"
+                                        value="{{ isset($tenant) ? $tenant->expire_date : '' }}">
+                                </div>
+
+                                <div class="col-md-6 mb-2">
+                                    <label for="status" class="form-label">租戶狀態</label>
+                                    <select id="status" name="status" class="select2 form-select">
+                                        <option value="activated"
+                                            {{ isset($tenant) ? ($tenant->status == 'activated' ? 'selected' : '') : '' }}>
+                                            已開通</option>
+                                        <option value="unactivated"
+                                            {{ isset($tenant) ? ($tenant->status == 'unactivated' ? 'selected' : '') : '' }}>
+                                            未開通</option>
+                                    </select>
                                 </div>
                             </div>
+                        </div>
+                    </div>
 
-                            <div class="col-md-6 mb-2">
-                                <label for="expire_date" class="form-label">到期時間</label>
-                                <input type="text" class="form-control" id="expire_date" name="expire_date"
-                                    value="{{ isset($tenant) ? $tenant->expire_date : '' }}">
-                            </div>
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6 mb-2">
+                                    <label for="line_channel_id" class="form-label">Line Channel ID</label>
+                                    <input type="text" id="line_channel_id" name="line_channel_id" class="form-control"
+                                        value="{{ isset($tenant) ? $tenant->channel_id ?? '' : '' }}">
+                                </div>
 
-                            <div class="col-md-6 mb-2">
-                                <label for="status" class="form-label">租戶狀態</label>
-                                <select id="status" name="status" class="select2 form-select">
-                                    <option value="activated"
-                                        {{ isset($tenant) ? ($tenant->status == 'activated' ? 'selected' : '') : '' }}>
-                                        已開通</option>
-                                    <option value="unactivated"
-                                        {{ isset($tenant) ? ($tenant->status == 'unactivated' ? 'selected' : '') : '' }}>
-                                        未開通</option>
-                                </select>
+                                <div class="col-md-6 mb-2">
+                                    <label for="line_channel_secret" class="form-label">Line Channel Secret</label>
+                                    <input type="password" id="line_channel_secret" name="line_channel_secret"
+                                        class="form-control"
+                                        value="{{ isset($tenant) ? $tenant->channel_secret ?? '' : '' }}">
+                                </div>
+
+                                <div class="col-12 mb-2">
+                                    <label for="line_channel_access_token" class="form-label">Line Channel
+                                        Access Token</label>
+                                    <textarea id="line_channel_access_token" name="line_channel_access_token" class="form-control" rows="3">{{ isset($tenant) ? $tenant->channel_access_token ?? '' : '' }}</textarea>
+                                </div>
                             </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
 @endsection

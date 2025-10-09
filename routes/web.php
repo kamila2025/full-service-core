@@ -68,4 +68,19 @@ Route::group([
       Route::resource('roles', \App\Http\Controllers\Tenant\TenantRoleController::class)->names('tenant.roles');
     });
   });
+
+  // Line 綁定頁面 (不需要認證)
+  Route::prefix('line')->group(function () {
+    /**
+     * Line Webhook
+     */
+    Route::post('/webhook', [\App\Http\Controllers\Tenant\Line\WebhookController::class, 'handle']);
+
+    /**
+     * Line 綁定頁面
+     */
+    Route::get('/bind', [\App\Http\Controllers\Tenant\Line\TenantLineBindController::class, 'showBindForm'])->name('tenant.line.bind.form');
+    Route::post('/bind', [\App\Http\Controllers\Tenant\Line\TenantLineBindController::class, 'submitBind'])->name('tenant.line.bind.submit');
+    Route::post('/check-binding', [\App\Http\Controllers\Tenant\Line\TenantLineBindController::class, 'checkBinding'])->name('tenant.line.bind.check');
+  });
 });

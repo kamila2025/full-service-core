@@ -75,19 +75,25 @@ class AdminTenantController extends Controller
   {
     try {
       $attributes = $request->validate([
-        'id'           => 'required|string|max:12',
-        'name'         => 'required|string|max:255',
-        'email'        => 'required|email|max:255',
-        'password'     => 'required|string|min:5',
-        'expire_date'  => 'required|date',
-        'status'       => 'required|string|in:activated,unactivated',
+        'id'                        => 'required|string|max:12',
+        'name'                      => 'required|string|max:255',
+        'email'                     => 'required|email|max:255',
+        'password'                  => 'required|string|min:5',
+        'expire_date'               => 'required|date',
+        'status'                    => 'required|string|in:activated,unactivated',
+        'line_channel_id'           => 'nullable|string',
+        'line_channel_secret'       => 'nullable|string',
+        'line_channel_access_token' => 'nullable|string',
       ], [], [
-        'id'           => '租戶ID',
-        'name'         => '租戶名稱',
-        'email'        => '租戶信箱',
-        'password'     => '租戶密碼',
-        'expire_date'  => '到期時間',
-        'status'       => '租戶狀態',
+        'id'                        => '租戶ID',
+        'name'                      => '租戶名稱',
+        'email'                     => '租戶信箱',
+        'password'                  => '租戶密碼',
+        'expire_date'               => '到期時間',
+        'status'                    => '租戶狀態',
+        'line_channel_id'           => 'Line Channel ID',
+        'line_channel_secret'       => 'Line Channel Secret',
+        'line_channel_access_token' => 'Line Channel Access Token',
       ]);
 
       // 創建租戶與租戶管理員
@@ -116,19 +122,25 @@ class AdminTenantController extends Controller
   {
     try {
       $attributes = $request->validate([
-        'id'           => 'required|string|max:12',
-        'name'         => 'required|string|max:255',
-        'email'        => 'required|email|max:255',
-        'password'     => 'nullable|string|min:5',
-        'expire_date'  => 'required|date',
-        'status'       => 'required|string|in:activated,unactivated',
+        'id'                        => 'required|string|max:12',
+        'name'                      => 'required|string|max:255',
+        'email'                     => 'required|email|max:255',
+        'password'                  => 'nullable|string|min:5',
+        'expire_date'               => 'required|date',
+        'status'                    => 'required|string|in:activated,unactivated',
+        'line_channel_id'           => 'nullable|string',
+        'line_channel_secret'       => 'nullable|string',
+        'line_channel_access_token' => 'nullable|string',
       ], [], [
-        'id'           => '租戶ID',
-        'name'         => '租戶名稱',
-        'email'        => '租戶信箱',
-        'password'     => '租戶密碼',
-        'expire_date'  => '到期時間',
-        'status'       => '租戶狀態',
+        'id'                        => '租戶ID',
+        'name'                      => '租戶名稱',
+        'email'                     => '租戶信箱',
+        'password'                  => '租戶密碼',
+        'expire_date'               => '到期時間',
+        'status'                    => '租戶狀態',
+        'line_channel_id'           => 'Line Channel ID',
+        'line_channel_secret'       => 'Line Channel Secret',
+        'line_channel_access_token' => 'Line Channel Access Token',
       ]);
 
       // 更新租戶
