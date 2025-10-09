@@ -71,9 +71,7 @@ Route::group([
 
   // Line 綁定頁面 (不需要認證)
   Route::prefix('line')->group(function () {
-    /**
-     * Line Webhook
-     */
+    // Line Webhook
     Route::post('/webhook', [\App\Http\Controllers\Tenant\Line\TenantWebhookController::class, 'handle']);
 
     /**
