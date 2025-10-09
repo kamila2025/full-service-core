@@ -13,8 +13,13 @@ $(function () {
   const searchName = $('#searchName');
   const searchStatus = $('#searchStatus');
   const searchUser = $('#searchUser');
-  const searchBtn = $('#searchBtn');
+  const searchExpireStartDate = $('#searchExpireStartDate');
+  const searchExpireEndDate = $('#searchExpireEndDate');
+  const searchCreatedStartDate = $('#searchCreatedStartDate');
+  const searchCreatedEndDate = $('#searchCreatedEndDate');
   const resetBtn = $('#resetBtn');
+  const searchBtn = $('#searchBtn');
+  const exportBtn = $('#exportBtn');
 
   if (dataTables.length) {
     var table = dataTables.DataTable({
@@ -32,6 +37,10 @@ $(function () {
           d.searchName = searchName.val();
           d.searchStatus = searchStatus.val();
           d.searchUser = searchUser.val();
+          d.searchExpireStartDate = searchExpireStartDate.val();
+          d.searchExpireEndDate = searchExpireEndDate.val();
+          d.searchCreatedStartDate = searchCreatedStartDate.val();
+          d.searchCreatedEndDate = searchCreatedEndDate.val();
         },
         error: function (xhr, error, thrown) {
           Swal.fire({
@@ -47,8 +56,8 @@ $(function () {
         { data: 'tenant_name' },
         { data: 'tenant_expire_date' },
         { data: 'tenant_user_name' },
-        { data: 'tenant_created_at' },
         { data: 'tenant_status' },
+        { data: 'tenant_created_at' },
         { data: null }
       ],
       columnDefs: [
@@ -69,7 +78,7 @@ $(function () {
           }
         },
         {
-          targets: 5,
+          targets: 4,
           render: function (data, type, full, meta) {
             return `<span class="badge ${full['tenant_status_badge']}">${full['tenant_status']}</span>`;
           }
@@ -78,6 +87,8 @@ $(function () {
           targets: -1,
           orderable: false,
           render: function (data, type, full, meta) {
+            const tenantId = full.tenant_id;
+
             return `
               <div class="d-flex align-items-center">
                 <div class="dropdown">
@@ -86,18 +97,23 @@ $(function () {
                   </button>
                   <ul class="dropdown-menu dropdown-menu-end">
                     <li>
-                      <a class="dropdown-item d-flex align-items-center" href="${apiUrl}/${full.tenant_id}/impersonate" target="_blank">
-                        <span>模擬登入</span>
+                      <a class="dropdown-item d-flex align-items-center" href="${apiUrl}/${tenantId}/edit">
+                        <span>編輯</span>
                       </a>
                     </li>
                     <li>
-                      <a class="dropdown-item d-flex align-items-center" href="${apiUrl}/${full.tenant_id}/edit">
-                        <span>編輯</span>
+                      <a class="dropdown-item d-flex align-items-center" href="/${tenantId}/admin/login" target="_blank">
+                        <span>網站</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item d-flex align-items-center" href="${apiUrl}/${tenantId}/impersonate" target="_blank">
+                        <span>模擬登入</span>
                       </a>
                     </li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
-                      <a class="dropdown-item d-flex align-items-center text-danger delete-record" href="javascript:void(0)" data-id="${full.tenant_id}">
+                      <a class="dropdown-item d-flex align-items-center text-danger delete-record" href="javascript:void(0)" data-id="${tenantId}">
                         <span>刪除</span>
                       </a>
                     </li>
@@ -145,18 +161,41 @@ $(function () {
     });
   }
 
+  // 重置事件
+  resetBtn.on('click', function () {
+    searchId.val('').trigger('change');
+    searchName.val('').trigger('change');
+    searchStatus.val('').trigger('change');
+    searchUser.val('').trigger('change');
+    searchExpireStartDate.val('');
+    searchExpireEndDate.val('');
+    searchCreatedStartDate.val('');
+    searchCreatedEndDate.val('');
+    table.draw();
+  });
+
   // 搜尋事件
   searchBtn.on('click', function () {
     table.draw();
   });
 
-  // 重置事件
-  resetBtn.on('click', function () {
-    searchId.val('');
-    searchName.val('');
-    searchStatus.val('').trigger('change');
-    searchUser.val('').trigger('change');
-    table.draw();
+  // 匯出事件
+  exportBtn.on('click', function () {
+    const params = $.param({
+      searchId: searchId.val(),
+      searchName: searchName.val(),
+      searchStatus: searchStatus.val(),
+      searchUser: searchUser.val(),
+      searchExpireStartDate: searchExpireStartDate.val(),
+      searchExpireEndDate: searchExpireEndDate.val(),
+      searchCreatedStartDate: searchCreatedStartDate.val(),
+      searchCreatedEndDate: searchCreatedEndDate.val()
+    });
+
+    const queryString = new URLSearchParams(params).toString();
+    const exportUrl = `${apiUrl}/export?${queryString}`;
+
+    window.location.href = exportUrl;
   });
 
   // 刪除租戶事件

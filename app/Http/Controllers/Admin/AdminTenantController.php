@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Enums\Admin\Tenant\TenantStatusEnum;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Tenant;
@@ -26,32 +25,7 @@ class AdminTenantController extends Controller
   public function index(Request $request)
   {
     if ($request->ajax()) {
-      $query = Tenant::query();
-
-      // 搜尋條件
-      if ($request->filled('searchId')) {
-        $query->where('id', 'like', '%' . $request->searchId . '%');
-      }
-
-      if ($request->filled('searchName')) {
-        $query->where('name', 'like', '%' . $request->searchName . '%');
-      }
-
-      if ($request->filled('searchStatus')) {
-        $query->where('data->status', $request->searchStatus);
-      }
-
-      if ($request->filled('searchStartDate')) {
-        $query->whereDate('created_at', '>=', $request->searchStartDate);
-      }
-
-      if ($request->filled('searchEndDate')) {
-        $query->whereDate('created_at', '<=', $request->searchEndDate);
-      }
-
-      if ($request->filled('searchUser')) {
-        $query->where('user_id', $request->searchUser);
-      }
+      $query = $this->tenantService->searchTenant($request);
 
       $records = $query->orderBy('sort', 'asc')->get();
 
@@ -64,11 +38,24 @@ class AdminTenantController extends Controller
         ->addColumn('tenant_user_name',     fn($record) => $record->user->name)
         ->addColumn('tenant_created_at',    fn($record) => $record->created_at->format('Y-m-d H:i:s'))
         ->make(true);
-      }
+    }
 
-      return view('content.admin.admin-tenants', [
-        'users' => User::all(),
-      ]);
+    return view('content.admin.admin-tenants', [
+      'tenants' => Tenant::all(),
+      'users'   => User::all(),
+    ]);
+  }
+
+  /**
+   * 匯出租戶資料
+   */
+  public function export(Request $request)
+  {
+    try {
+      return $this->tenantService->exportTenants($request);
+    } catch (\Throwable $e) {
+      return $this->errorResponse('匯出失敗，請聯絡管理者', null, 500);
+    }
   }
 
   /**
@@ -76,9 +63,9 @@ class AdminTenantController extends Controller
    */
   public function create()
   {
-      $tenantId = $this->tenantService->generateUniqueTenantId(6);
+    $tenantId = $this->tenantService->generateUniqueTenantId(6);
 
-      return view('content.admin.admin-tenants-add', ['tenantId' => $tenantId]);
+    return view('content.admin.admin-tenants-add', ['tenantId' => $tenantId]);
   }
 
   /**
@@ -94,7 +81,7 @@ class AdminTenantController extends Controller
         'password'     => 'required|string|min:5',
         'expire_date'  => 'required|date',
         'status'       => 'required|string|in:activated,unactivated',
-      ],[],[
+      ], [], [
         'id'           => '租戶ID',
         'name'         => '租戶名稱',
         'email'        => '租戶信箱',
@@ -117,9 +104,9 @@ class AdminTenantController extends Controller
    */
   public function edit($id)
   {
-      $tenant = Tenant::findOrFail($id);
+    $tenant = Tenant::findOrFail($id);
 
-      return view('content.admin.admin-tenants-add', ['tenant' => $tenant]);
+    return view('content.admin.admin-tenants-add', ['tenant' => $tenant]);
   }
 
   /**
@@ -135,7 +122,7 @@ class AdminTenantController extends Controller
         'password'     => 'nullable|string|min:5',
         'expire_date'  => 'required|date',
         'status'       => 'required|string|in:activated,unactivated',
-      ],[],[
+      ], [], [
         'id'           => '租戶ID',
         'name'         => '租戶名稱',
         'email'        => '租戶信箱',
