@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Enums\Admin\Tenant\TenantStatusEnum;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Tenant;
@@ -26,40 +25,7 @@ class AdminTenantController extends Controller
   public function index(Request $request)
   {
     if ($request->ajax()) {
-      $query = Tenant::query();
-
-      // 搜尋條件
-      if ($request->filled('searchId')) {
-        $query->where('id', 'like', '%' . $request->searchId . '%');
-      }
-
-      if ($request->filled('searchName')) {
-        $query->where('name', 'like', '%' . $request->searchName . '%');
-      }
-
-      if ($request->filled('searchUser')) {
-        $query->where('user_id', $request->searchUser);
-      }
-
-      if ($request->filled('searchStatus')) {
-        $query->where('data->status', $request->searchStatus);
-      }
-
-      if ($request->filled('searchExpireStartDate')) {
-        $query->whereDate('data->expire_date', '>=', $request->searchExpireStartDate);
-      }
-
-      if ($request->filled('searchExpireEndDate')) {
-        $query->whereDate('data->expire_date', '<=', $request->searchExpireEndDate);
-      }
-
-      if ($request->filled('searchCreatedStartDate')) {
-        $query->whereDate('created_at', '>=', $request->searchCreatedStartDate);
-      }
-
-      if ($request->filled('searchCreatedEndDate')) {
-        $query->whereDate('created_at', '<=', $request->searchCreatedEndDate);
-      }
+      $query = $this->tenantService->searchTenant($request);
 
       $records = $query->orderBy('sort', 'asc')->get();
 
