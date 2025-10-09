@@ -74,7 +74,7 @@ Route::group([
     /**
      * Line Webhook
      */
-    Route::post('/webhook', [\App\Http\Controllers\Tenant\Line\WebhookController::class, 'handle']);
+    Route::post('/webhook', [\App\Http\Controllers\Tenant\Line\TenantWebhookController::class, 'handle']);
 
     /**
      * Line 綁定頁面
