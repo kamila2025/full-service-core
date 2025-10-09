@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Tenant;
 
+use App\Enums\Admin\Tenant\TenantStatusEnum;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -15,16 +16,16 @@ class TenantAuthController extends Controller
    */
   function index()
   {
-      $tenant = Tenant::findOrFail(tenant('id'));
+    $tenant = Tenant::findOrFail(tenant('id'));
 
-      if (Auth::guard('tenant')->check()) {
-        return redirect()->route('tenant.dashboard.index', ['tenant' => tenant('id')]);
-      }
+    if (Auth::guard('tenant')->check()) {
+      return redirect()->route('tenant.dashboard.index', ['tenant' => tenant('id')]);
+    }
 
-      return view('content.tenant.tenant-login', [
-        'tenant'      => $tenant,
-        'pageConfigs' => ['myLayout' => 'blank'],
-      ]);
+    return view('content.tenant.tenant-login', [
+      'tenant'      => $tenant,
+      'pageConfigs' => ['myLayout' => 'blank'],
+    ]);
   }
 
   /**
@@ -33,22 +34,35 @@ class TenantAuthController extends Controller
   function login(Request $request)
   {
     try {
-      $attributes = $request->validate([
+      $attributes = $request->validate(
+        [
           'email'     => 'required|string|email|max:255',
           'password'  => 'required|string|min:5',
-      ],
-      [],
-      [
+        ],
+        [],
+        [
           'email'     => '帳號',
           'password'  => '密碼',
-      ]);
+        ]
+      );
+
+      $tenant = Tenant::findOrFail(tenant('id'));
+
+      if ($tenant->status === TenantStatusEnum::未開通->value) {
+        return $this->errorResponse('網站未開通，請聯絡管理者', null, 401);
+      }
+
+      if ($tenant->expire_date < now()) {
+        return $this->errorResponse('網站已到期，請聯絡管理者', null, 401);
+      }
+
 
       if (Auth::guard('tenant')->attempt($attributes)) {
-          $request->session()->regenerate();
+        $request->session()->regenerate();
 
-          $tenantId = tenant('id');
+        $tenantId = tenant('id');
 
-          return $this->successResponse('登入成功', ['redirect_url' => route('tenant.dashboard.index', ['tenant' => $tenantId])], 200);
+        return $this->successResponse('登入成功', ['redirect_url' => route('tenant.dashboard.index', ['tenant' => $tenantId])], 200);
       }
 
       return $this->errorResponse('帳號或密碼錯誤', null, 401);

@@ -78,6 +78,8 @@ $(function () {
           targets: -1,
           orderable: false,
           render: function (data, type, full, meta) {
+            const tenantId = full.tenant_id;
+
             return `
               <div class="d-flex align-items-center">
                 <div class="dropdown">
@@ -86,18 +88,23 @@ $(function () {
                   </button>
                   <ul class="dropdown-menu dropdown-menu-end">
                     <li>
-                      <a class="dropdown-item d-flex align-items-center" href="${apiUrl}/${full.tenant_id}/impersonate" target="_blank">
-                        <span>模擬登入</span>
+                      <a class="dropdown-item d-flex align-items-center" href="${apiUrl}/${tenantId}/edit">
+                        <span>編輯</span>
                       </a>
                     </li>
                     <li>
-                      <a class="dropdown-item d-flex align-items-center" href="${apiUrl}/${full.tenant_id}/edit">
-                        <span>編輯</span>
+                      <a class="dropdown-item d-flex align-items-center" href="/${tenantId}/admin/login" target="_blank">
+                        <span>網站</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item d-flex align-items-center" href="${apiUrl}/${tenantId}/impersonate" target="_blank">
+                        <span>模擬登入</span>
                       </a>
                     </li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
-                      <a class="dropdown-item d-flex align-items-center text-danger delete-record" href="javascript:void(0)" data-id="${full.tenant_id}">
+                      <a class="dropdown-item d-flex align-items-center text-danger delete-record" href="javascript:void(0)" data-id="${tenantId}">
                         <span>刪除</span>
                       </a>
                     </li>
