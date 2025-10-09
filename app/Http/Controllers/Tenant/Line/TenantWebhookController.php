@@ -67,16 +67,79 @@ class TenantWebhookController extends Controller
       Log::info('LINE Webhook 處理事件', $e);
 
       if (($e['type'] ?? '') === 'message' && ($e['message']['type'] ?? '') === 'text') {
-        $client->replyMessage([
-          'replyToken' => $e['replyToken'],
-          'messages'   => [[
-            'type' => 'text',
-            'text' => 'Hi！Webhook OK 🎉',
-          ]],
-        ]);
+        $this->handleTextMessage($client, $e, $tenant);
       }
     }
 
     return response('OK', 200);
+  }
+
+  /**
+   * 處理文字訊息
+   */
+  private function handleTextMessage($client, array $event, Tenant $tenant)
+  {
+    $messageText = $event['message']['text'] ?? '';
+    $replyToken = $event['replyToken'] ?? '';
+
+    // 檢查是否為綁定指令
+    if (str_contains($messageText, '綁定') || str_contains($messageText, 'bind')) {
+      $this->sendBindingInstructions($client, $replyToken, $tenant);
+      return;
+    }
+
+    // 預設回覆
+    $client->replyMessage([
+      'replyToken' => $replyToken,
+      'messages' => [[
+        'type' => 'text',
+        'text' => "您好！我是 {$tenant->name} 的客服機器人。\n\n如需綁定會員，請點擊下方按鈕：",
+        'quickReply' => [
+          'items' => [[
+            'type' => 'action',
+            'action' => [
+              'type' => 'uri',
+              'uri' => $this->getBindingUrl($tenant),
+              'label' => '綁定會員'
+            ]
+          ]]
+        ]
+      ]],
+    ]);
+  }
+
+  /**
+   * 發送綁定說明
+   */
+  private function sendBindingInstructions($client, string $replyToken, Tenant $tenant)
+  {
+    $client->replyMessage([
+      'replyToken' => $replyToken,
+      'messages' => [[
+        'type' => 'text',
+        'text' => "歡迎使用 {$tenant->name} 的會員綁定服務！\n\n請點擊下方按鈕開始綁定：",
+        'quickReply' => [
+          'items' => [[
+            'type' => 'action',
+            'action' => [
+              'type' => 'uri',
+              'uri' => $this->getBindingUrl($tenant),
+              'label' => '開始綁定'
+            ]
+          ]]
+        ]
+      ]],
+    ]);
+  }
+
+  /**
+   * 取得綁定頁面 URL
+   */
+  private function getBindingUrl(Tenant $tenant): string
+  {
+    $domain = $tenant->domains->first();
+    $baseUrl = $domain ? "https://{$domain->domain}" : config('app.url');
+
+    return "{$baseUrl}/{$tenant->id}/line/bind";
   }
 }

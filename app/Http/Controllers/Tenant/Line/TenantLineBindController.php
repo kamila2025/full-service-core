@@ -21,14 +21,14 @@ class TenantLineBindController extends Controller
 
     // 檢查租戶是否已配置 Line
     if (!$this->isLineConfigured($tenant)) {
-      return view('tenant.line.bind-error', [
+      return view('content.tenant.line.tenant-line-bind-error', [
         'message' => '此租戶尚未配置 Line 服務'
       ]);
     }
 
     $bindToken = $this->generateBindToken($tenant);
 
-    return view('tenant.line.bind-form', [
+    return view('content.tenant.line.tenant-line-bind-form', [
       'tenant' => $tenant,
       'bindToken' => $bindToken
     ]);
