@@ -23,6 +23,16 @@
     <script>
         // 初始化 select2
         $('.select2').select2();
+
+        // 初始化 flatpickr
+        const flatpickr = $('.flatpickr');
+        if (flatpickr) {
+            flatpickr.flatpickr({
+                allowInput: true,
+                monthSelectorType: 'static',
+                locale: 'zh_tw'
+            });
+        }
     </script>
     <script src="{{ asset('js/admin/admin-tenants.js?v=' . time()) }}"></script>
 @endsection
@@ -47,18 +57,20 @@
             <div class="row g-3">
                 <div class="col-md-3">
                     <label for="searchId" class="form-label">租戶ID</label>
-                    <input type="text" id="searchId" class="form-control" placeholder="搜尋租戶ID...">
+                    <select id="searchId" class="select2 form-select">
+                        <option value="">全部</option>
+                        @foreach ($tenants as $tenant)
+                            <option value="{{ $tenant->id }}">{{ $tenant->id }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="col-md-3">
                     <label for="searchName" class="form-label">租戶名稱</label>
-                    <input type="text" id="searchName" class="form-control" placeholder="搜尋租戶名稱...">
-                </div>
-                <div class="col-md-3">
-                    <label for="searchStatus" class="form-label">租戶狀態</label>
-                    <select id="searchStatus" class="select2 form-select">
+                    <select id="searchName" class="select2 form-select">
                         <option value="">全部</option>
-                        <option value="activated">已開通</option>
-                        <option value="unactivated">未開通</option>
+                        @foreach ($tenants as $tenant)
+                            <option value="{{ $tenant->name }}">{{ $tenant->name }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="col-md-3">
@@ -70,14 +82,42 @@
                         @endforeach
                     </select>
                 </div>
+                <div class="col-md-3">
+                    <label for="searchStatus" class="form-label">租戶狀態</label>
+                    <select id="searchStatus" class="select2 form-select">
+                        <option value="">全部</option>
+                        <option value="activated">已開通</option>
+                        <option value="unactivated">未開通</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="searchExpireStartDate" class="form-label">到期時間(起)</label>
+                    <input type="text" class="flatpickr form-control" id="searchExpireStartDate"
+                        name="searchExpireStartDate">
+                </div>
+                <div class="col-md-3">
+                    <label for="searchExpireEndDate" class="form-label">到期時間(訖)</label>
+                    <input type="text" class="flatpickr form-control" id="searchExpireEndDate"
+                        name="searchExpireEndDate">
+                </div>
+                <div class="col-md-3">
+                    <label for="searchCreatedStartDate" class="form-label">建立時間(起)</label>
+                    <input type="text" class="flatpickr form-control" id="searchCreatedStartDate"
+                        name="searchCreatedStartDate">
+                </div>
+                <div class="col-md-3">
+                    <label for="searchCreatedEndDate" class="form-label">建立時間(訖)</label>
+                    <input type="text" class="flatpickr form-control" id="searchCreatedEndDate"
+                        name="searchCreatedEndDate">
+                </div>
             </div>
             <div class="row g-3 mt-2">
                 <div class="col-12 d-flex justify-content-end">
-                    <button type="button" id="searchBtn" class="btn btn-primary me-2">
-                        <i class="bx bx-search me-1"></i>搜尋
-                    </button>
-                    <button type="button" id="resetBtn" class="btn btn-outline-secondary">
+                    <button type="button" id="resetBtn" class="btn btn-outline-secondary me-2">
                         <i class="bx bx-refresh me-1"></i>重置
+                    </button>
+                    <button type="button" id="searchBtn" class="btn btn-primary">
+                        <i class="bx bx-search me-1"></i>搜尋
                     </button>
                 </div>
             </div>
@@ -93,8 +133,8 @@
                         <th>租戶名稱</th>
                         <th>到期時間</th>
                         <th>管理人員</th>
+                        <th>租戶狀態</th>
                         <th>建立時間</th>
-                        <th>狀態</th>
                         <th></th>
                     </tr>
                 </thead>

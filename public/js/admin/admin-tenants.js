@@ -13,6 +13,10 @@ $(function () {
   const searchName = $('#searchName');
   const searchStatus = $('#searchStatus');
   const searchUser = $('#searchUser');
+  const searchExpireStartDate = $('#searchExpireStartDate');
+  const searchExpireEndDate = $('#searchExpireEndDate');
+  const searchCreatedStartDate = $('#searchCreatedStartDate');
+  const searchCreatedEndDate = $('#searchCreatedEndDate');
   const searchBtn = $('#searchBtn');
   const resetBtn = $('#resetBtn');
 
@@ -32,6 +36,10 @@ $(function () {
           d.searchName = searchName.val();
           d.searchStatus = searchStatus.val();
           d.searchUser = searchUser.val();
+          d.searchExpireStartDate = searchExpireStartDate.val();
+          d.searchExpireEndDate = searchExpireEndDate.val();
+          d.searchCreatedStartDate = searchCreatedStartDate.val();
+          d.searchCreatedEndDate = searchCreatedEndDate.val();
         },
         error: function (xhr, error, thrown) {
           Swal.fire({
@@ -47,8 +55,8 @@ $(function () {
         { data: 'tenant_name' },
         { data: 'tenant_expire_date' },
         { data: 'tenant_user_name' },
-        { data: 'tenant_created_at' },
         { data: 'tenant_status' },
+        { data: 'tenant_created_at' },
         { data: null }
       ],
       columnDefs: [
@@ -69,7 +77,7 @@ $(function () {
           }
         },
         {
-          targets: 5,
+          targets: 4,
           render: function (data, type, full, meta) {
             return `<span class="badge ${full['tenant_status_badge']}">${full['tenant_status']}</span>`;
           }
@@ -159,10 +167,14 @@ $(function () {
 
   // 重置事件
   resetBtn.on('click', function () {
-    searchId.val('');
-    searchName.val('');
+    searchId.val('').trigger('change');
+    searchName.val('').trigger('change');
     searchStatus.val('').trigger('change');
     searchUser.val('').trigger('change');
+    searchExpireStartDate.val('');
+    searchExpireEndDate.val('');
+    searchCreatedStartDate.val('');
+    searchCreatedEndDate.val('');
     table.draw();
   });
 

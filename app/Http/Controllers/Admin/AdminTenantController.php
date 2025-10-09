@@ -37,20 +37,28 @@ class AdminTenantController extends Controller
         $query->where('name', 'like', '%' . $request->searchName . '%');
       }
 
+      if ($request->filled('searchUser')) {
+        $query->where('user_id', $request->searchUser);
+      }
+
       if ($request->filled('searchStatus')) {
         $query->where('data->status', $request->searchStatus);
       }
 
-      if ($request->filled('searchStartDate')) {
-        $query->whereDate('created_at', '>=', $request->searchStartDate);
+      if ($request->filled('searchExpireStartDate')) {
+        $query->whereDate('data->expire_date', '>=', $request->searchExpireStartDate);
       }
 
-      if ($request->filled('searchEndDate')) {
-        $query->whereDate('created_at', '<=', $request->searchEndDate);
+      if ($request->filled('searchExpireEndDate')) {
+        $query->whereDate('data->expire_date', '<=', $request->searchExpireEndDate);
       }
 
-      if ($request->filled('searchUser')) {
-        $query->where('user_id', $request->searchUser);
+      if ($request->filled('searchCreatedStartDate')) {
+        $query->whereDate('created_at', '>=', $request->searchCreatedStartDate);
+      }
+
+      if ($request->filled('searchCreatedEndDate')) {
+        $query->whereDate('created_at', '<=', $request->searchCreatedEndDate);
       }
 
       $records = $query->orderBy('sort', 'asc')->get();
@@ -64,11 +72,12 @@ class AdminTenantController extends Controller
         ->addColumn('tenant_user_name',     fn($record) => $record->user->name)
         ->addColumn('tenant_created_at',    fn($record) => $record->created_at->format('Y-m-d H:i:s'))
         ->make(true);
-      }
+    }
 
-      return view('content.admin.admin-tenants', [
-        'users' => User::all(),
-      ]);
+    return view('content.admin.admin-tenants', [
+      'tenants' => Tenant::all(),
+      'users'   => User::all(),
+    ]);
   }
 
   /**
@@ -76,9 +85,9 @@ class AdminTenantController extends Controller
    */
   public function create()
   {
-      $tenantId = $this->tenantService->generateUniqueTenantId(6);
+    $tenantId = $this->tenantService->generateUniqueTenantId(6);
 
-      return view('content.admin.admin-tenants-add', ['tenantId' => $tenantId]);
+    return view('content.admin.admin-tenants-add', ['tenantId' => $tenantId]);
   }
 
   /**
@@ -94,7 +103,7 @@ class AdminTenantController extends Controller
         'password'     => 'required|string|min:5',
         'expire_date'  => 'required|date',
         'status'       => 'required|string|in:activated,unactivated',
-      ],[],[
+      ], [], [
         'id'           => '租戶ID',
         'name'         => '租戶名稱',
         'email'        => '租戶信箱',
@@ -117,9 +126,9 @@ class AdminTenantController extends Controller
    */
   public function edit($id)
   {
-      $tenant = Tenant::findOrFail($id);
+    $tenant = Tenant::findOrFail($id);
 
-      return view('content.admin.admin-tenants-add', ['tenant' => $tenant]);
+    return view('content.admin.admin-tenants-add', ['tenant' => $tenant]);
   }
 
   /**
@@ -135,7 +144,7 @@ class AdminTenantController extends Controller
         'password'     => 'nullable|string|min:5',
         'expire_date'  => 'required|date',
         'status'       => 'required|string|in:activated,unactivated',
-      ],[],[
+      ], [], [
         'id'           => '租戶ID',
         'name'         => '租戶名稱',
         'email'        => '租戶信箱',
