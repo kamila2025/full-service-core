@@ -8,6 +8,10 @@ class LineUser extends Model
 {
   protected $guarded = [];
 
+  protected $cast = [
+    'profile' => 'array',
+  ];
+
   /**
    * 關聯的會員
    */
