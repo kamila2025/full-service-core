@@ -64,11 +64,11 @@ class TenantLineLoginController extends Controller
     }
 
     // 檢查錯誤
-    if ($attributes['error']) {
+    if (isset($attributes['error']) && $attributes['error']) {
       Log::error('Line Login 錯誤', [
         'tenant_id'         => $tenant->id,
         'error'             => $attributes['error'],
-        'error_description' => $attributes['error_description']
+        'error_description' => $attributes['error_description'] ?? null
       ]);
 
       return view('content.tenant.line.tenant-line-login-error', [
