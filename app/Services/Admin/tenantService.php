@@ -203,4 +203,14 @@ class tenantService
     $seeder = new TenantPermissionSeeder();
     $seeder->run();
   }
+
+  /**
+   * 判斷有無設定 Line Channel ID 和 Channel Secret
+   */
+  public function isLineConfigured(Tenant $tenant): bool
+  {
+    $lineConfig = isset($tenant->channel_id) && isset($tenant->channel_secret);
+
+    return $lineConfig;
+  }
 }

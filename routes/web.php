@@ -69,16 +69,16 @@ Route::group([
     });
   });
 
-  // Line 綁定頁面 (不需要認證)
+  // Line 登入綁定頁面 (不需要認證)
   Route::prefix('line')->group(function () {
     // Line Webhook
-    Route::post('/webhook', [\App\Http\Controllers\Tenant\Line\TenantWebhookController::class, 'handle']);
+    Route::post('/webhook', [\App\Http\Controllers\Tenant\Line\TenantWebhookController::class, 'handle'])->name('tenant.line.webhook');
 
     /**
-     * Line 綁定頁面
+     * Line Login 流程
      */
-    Route::get('/bind', [\App\Http\Controllers\Tenant\Line\TenantLineBindController::class, 'showBindForm'])->name('tenant.line.bind.form');
-    Route::post('/bind', [\App\Http\Controllers\Tenant\Line\TenantLineBindController::class, 'submitBind'])->name('tenant.line.bind.submit');
-    Route::post('/check-binding', [\App\Http\Controllers\Tenant\Line\TenantLineBindController::class, 'checkBinding'])->name('tenant.line.bind.check');
+    Route::get('/login', [\App\Http\Controllers\Tenant\Line\TenantLineLoginController::class, 'login'])->name('tenant.line.login');
+    Route::get('/login/callback', [\App\Http\Controllers\Tenant\Line\TenantLineLoginController::class, 'callback'])->name('tenant.line.login.callback');
+    Route::get('/bind/success', [\App\Http\Controllers\Tenant\Line\TenantLineLoginController::class, 'showSuccess'])->name('tenant.line.bind.success');
   });
 });

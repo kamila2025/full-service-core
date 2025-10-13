@@ -1,223 +1,303 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-TW">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $tenant->name }} - Line 會員綁定</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ $tenant->name }} - 綁定表單</title>
     <style>
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .bind-container {
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
             background: white;
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
             overflow: hidden;
         }
 
-        .bind-header {
-            background: linear-gradient(135deg, #00C851 0%, #007E33 100%);
-            color: white;
-            padding: 2rem;
-            text-align: center;
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
-        .bind-form {
-            padding: 2rem;
-        }
-
-        .form-control {
-            border-radius: 10px;
-            border: 2px solid #e9ecef;
-            padding: 12px 16px;
-            transition: all 0.3s ease;
-        }
-
-        .form-control:focus {
-            border-color: #00C851;
-            box-shadow: 0 0 0 0.2rem rgba(0, 200, 81, 0.25);
-        }
-
-        .btn-bind {
-            background: linear-gradient(135deg, #00C851 0%, #007E33 100%);
-            border: none;
-            border-radius: 10px;
-            padding: 12px 30px;
+        h1 {
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 24px;
             font-weight: 600;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        input[type="email"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="tel"]:focus,
+        input[type="email"]:focus {
+            outline: none;
+            border-color: #00C300;
+        }
+
+        .submit-button {
+            background: #00C300;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
             transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
         }
 
-        .btn-bind:hover {
+        .submit-button:hover {
+            background: #00A300;
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0, 200, 81, 0.3);
+            box-shadow: 0 10px 20px rgba(0, 195, 0, 0.3);
         }
 
-        .line-icon {
-            color: #00C851;
-            font-size: 2rem;
+        .submit-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
 
         .loading {
             display: none;
+            text-align: center;
+            margin-top: 20px;
         }
 
-        .success-message {
-            display: none;
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-            padding: 1rem;
-            border-radius: 10px;
-            margin-top: 1rem;
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #00C300;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
         }
 
-        .error-message {
-            display: none;
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-            padding: 1rem;
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 15px;
             border-radius: 10px;
-            margin-top: 1rem;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .success {
+            background: #efe;
+            color: #363;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .line-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .line-info h3 {
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+
+        .line-info p {
+            color: #666;
+            font-size: 14px;
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-6 col-lg-5">
-                <div class="bind-container mt-5">
-                    <div class="bind-header">
-                        <i class="fab fa-line line-icon mb-3"></i>
-                        <h2>{{ $tenant->name }}</h2>
-                        <p class="mb-0">Line 會員綁定服務</p>
-                    </div>
-
-                    <div class="bind-form">
-                        <form id="bindForm">
-                            <input type="hidden" name="bind_token" value="{{ $bindToken }}">
-
-                            <div class="mb-3">
-                                <label for="name" class="form-label">
-                                    <i class="fas fa-user me-2"></i>姓名
-                                </label>
-                                <input type="text" class="form-control" id="name" name="name" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="phone" class="form-label">
-                                    <i class="fas fa-phone me-2"></i>電話號碼
-                                </label>
-                                <input type="tel" class="form-control" id="phone" name="phone" required>
-                            </div>
-
-                            <div class="mb-4">
-                                <label for="email" class="form-label">
-                                    <i class="fas fa-envelope me-2"></i>電子郵件 (選填)
-                                </label>
-                                <input type="email" class="form-control" id="email" name="email">
-                            </div>
-
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary btn-bind">
-                                    <i class="fas fa-link me-2"></i>綁定會員
-                                </button>
-                            </div>
-
-                            <div class="loading text-center mt-3">
-                                <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">處理中...</span>
-                                </div>
-                                <p class="mt-2">正在處理綁定請求...</p>
-                            </div>
-
-                            <div class="success-message">
-                                <i class="fas fa-check-circle me-2"></i>
-                                <strong>綁定成功！</strong> 您已成功綁定會員帳號。
-                            </div>
-
-                            <div class="error-message">
-                                <i class="fas fa-exclamation-triangle me-2"></i>
-                                <strong>綁定失敗！</strong> <span class="error-text"></span>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <div class="text-center mt-4">
-                    <small class="text-white">
-                        <i class="fas fa-shield-alt me-1"></i>
-                        您的資料將安全地儲存在 {{ $tenant->name }} 的系統中
-                    </small>
-                </div>
+        <div class="header">
+            <div class="avatar">
+                @if (isset($lineUserData['pictureUrl']) && $lineUserData['pictureUrl'])
+                    <img src="{{ $lineUserData['pictureUrl'] }}" alt="Line 頭像">
+                @else
+                    👤
+                @endif
             </div>
+            <h1>會員綁定</h1>
+            <p class="subtitle">請填寫您的會員資訊</p>
+        </div>
+
+        @if (isset($lineUserData))
+            <div class="line-info">
+                <h3>✅ Line 登入成功</h3>
+                <p>歡迎，{{ $lineUserData['displayName'] }}！</p>
+            </div>
+        @endif
+
+        <form id="bindForm">
+            <input type="hidden" name="line_user_id" value="{{ $lineUserData['userId'] ?? '' }}">
+            <input type="hidden" name="bind_token" value="{{ $bindToken }}">
+
+            <div class="form-group">
+                <label for="name">姓名 *</label>
+                <input type="text" id="name" name="name" value="{{ $lineUserData['displayName'] ?? '' }}"
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">電話 *</label>
+                <input type="tel" id="phone" name="phone" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">電子郵件</label>
+                <input type="email" id="email" name="email">
+            </div>
+
+            <button type="submit" class="submit-button" id="submitBtn">
+                完成綁定
+            </button>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 10px; color: #666;">正在處理中...</p>
+        </div>
+
+        <div class="error" id="error">
+            <p id="errorMessage"></p>
+        </div>
+
+        <div class="success" id="success">
+            <p id="successMessage"></p>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.getElementById('bindForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            const form = e.target;
-            const formData = new FormData(form);
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            const success = document.getElementById('success');
 
-            // 隱藏表單，顯示載入中
-            form.style.display = 'none';
-            document.querySelector('.loading').style.display = 'block';
-            document.querySelector('.success-message').style.display = 'none';
-            document.querySelector('.error-message').style.display = 'none';
+            // 顯示載入狀態
+            submitBtn.disabled = true;
+            loading.style.display = 'block';
+            error.style.display = 'none';
+            success.style.display = 'none';
 
             try {
-                const response = await fetch('{{ route('tenant.line.bind.submit', $tenant->id) }}', {
+                const formData = new FormData(this);
+                const response = await fetch('{{ route('tenant.line.bind.submit') }}', {
                     method: 'POST',
                     body: formData,
                     headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
-                            'content')
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute(
+                            'content') || ''
                     }
                 });
 
                 const result = await response.json();
 
-                // 隱藏載入中
-                document.querySelector('.loading').style.display = 'none';
-
                 if (result.success) {
-                    document.querySelector('.success-message').style.display = 'block';
-                    form.reset();
+                    success.style.display = 'block';
+                    document.getElementById('successMessage').textContent = result.message;
+
+                    // 3秒後跳轉到成功頁面
+                    setTimeout(() => {
+                        if (result.redirect_url) {
+                            window.location.href = result.redirect_url;
+                        }
+                    }, 3000);
                 } else {
-                    document.querySelector('.error-message').style.display = 'block';
-                    document.querySelector('.error-text').textContent = result.message || '發生未知錯誤';
-                    form.style.display = 'block';
+                    throw new Error(result.message || '綁定失敗');
                 }
-            } catch (error) {
-                document.querySelector('.loading').style.display = 'none';
-                document.querySelector('.error-message').style.display = 'block';
-                document.querySelector('.error-text').textContent = '網路連線錯誤，請稍後再試';
-                form.style.display = 'block';
+
+            } catch (err) {
+                error.style.display = 'block';
+                document.getElementById('errorMessage').textContent = err.message;
+            } finally {
+                submitBtn.disabled = false;
+                loading.style.display = 'none';
             }
         });
-
-        // 自動填入 Line 用戶 ID (如果有的話)
-        const urlParams = new URLSearchParams(window.location.search);
-        const lineUserId = urlParams.get('line_user_id');
-        if (lineUserId) {
-            // 添加隱藏欄位
-            const hiddenInput = document.createElement('input');
-            hiddenInput.type = 'hidden';
-            hiddenInput.name = 'line_user_id';
-            hiddenInput.value = lineUserId;
-            document.getElementById('bindForm').appendChild(hiddenInput);
-        }
     </script>
 </body>
 
