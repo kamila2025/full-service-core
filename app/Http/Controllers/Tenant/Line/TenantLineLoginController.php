@@ -7,7 +7,7 @@ use App\Models\Member;
 use App\Models\LineUser;
 use App\Models\Tenant;
 use App\Services\Admin\TenantService;
-use App\Services\Tenant\LineService;
+use App\Services\Tenant\Line\LineService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;

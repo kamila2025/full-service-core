@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Tenant;
+namespace App\Services\Tenant\Line;
 
 use App\Models\Tenant;
 use Illuminate\Support\Facades\Log;
