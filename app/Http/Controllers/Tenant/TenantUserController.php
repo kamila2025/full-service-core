@@ -5,19 +5,14 @@ namespace App\Http\Controllers\Tenant;
 use App\Enums\Tenant\PermissionNameEnum;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Services\Tenant\userService;
+use App\Services\Tenant\UserService;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Yajra\DataTables\Facades\DataTables;
 
 class TenantUserController extends BaseTenantController
 {
-  protected $userService;
-
-  public function __construct(userService $userService)
-  {
-    $this->userService = $userService;
-  }
+  public function __construct(protected UserService $userService) {}
 
   /**
    * 員工管理頁面
@@ -68,7 +63,7 @@ class TenantUserController extends BaseTenantController
         'role'          => 'nullable|string',
         'permissions'   => 'nullable|array',
         'permissions.*' => 'string',
-      ],[],[
+      ], [], [
         'name'          => '員工姓名',
         'email'         => '員工信箱',
         'password'      => '員工密碼',
@@ -127,7 +122,7 @@ class TenantUserController extends BaseTenantController
         'role'         => 'nullable|string',
         'permissions'  => 'nullable|array',
         'permissions.*' => 'string',
-        ],[],[
+      ], [], [
         'name'         => '員工姓名',
         'email'        => '員工信箱',
         'password'     => '員工密碼',

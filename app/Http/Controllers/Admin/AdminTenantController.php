@@ -7,17 +7,12 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Tenant;
 use App\Models\User;
-use App\Services\Admin\tenantService;
+use App\Services\Admin\TenantService;
 use Yajra\DataTables\Facades\DataTables;
 
 class AdminTenantController extends Controller
 {
-  protected $tenantService;
-
-  public function __construct(tenantService $tenantService)
-  {
-    $this->tenantService = $tenantService;
-  }
+  public function __construct(protected TenantService $tenantService) {}
 
   /**
    * 租戶管理頁面

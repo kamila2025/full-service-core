@@ -11,7 +11,7 @@ use Database\Seeders\TenantPermissionSeeder;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\Admin\TenantExport;
 
-class tenantService
+class TenantService
 {
   /**
    * 創建租戶及其管理員

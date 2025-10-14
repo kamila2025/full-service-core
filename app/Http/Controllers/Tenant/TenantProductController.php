@@ -8,19 +8,12 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Repositories\ProductRepository;
-use App\Services\Tenant\productService;
+use App\Services\Tenant\ProductService;
 use Yajra\DataTables\Facades\DataTables;
 
 class TenantProductController extends BaseTenantController
 {
-  protected $productService;
-  protected $productRepository;
-
-  public function __construct(productService $productService, ProductRepository $productRepository)
-  {
-    $this->productService = $productService;
-    $this->productRepository = $productRepository;
-  }
+  public function __construct(protected ProductService $productService, protected ProductRepository $productRepository) {}
 
   /**
    * 分類管理頁面
@@ -94,7 +87,7 @@ class TenantProductController extends BaseTenantController
         'variants.*.price'            => 'required|numeric',
         'variants.*.compare_at_price' => 'nullable|numeric',
         'variants.*.cost_price'       => 'nullable|numeric',
-      ],[],[
+      ], [], [
         'name'                        => '商品名稱',
         'description'                 => '商品描述',
         'image_url'                   => '商品圖片',
@@ -178,7 +171,7 @@ class TenantProductController extends BaseTenantController
         'variants.*.price'            => 'required|numeric',
         'variants.*.compare_at_price' => 'nullable|numeric',
         'variants.*.cost_price'       => 'nullable|numeric',
-      ],[],[
+      ], [], [
         'name'                        => '商品名稱',
         'description'                 => '商品描述',
         'image_url'                   => '商品圖片',

@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Member;
 use App\Models\LineUser;
 use App\Models\Tenant;
-use App\Services\Admin\tenantService;
+use App\Services\Admin\TenantService;
+use App\Services\Tenant\LineService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -14,7 +15,7 @@ use Illuminate\Support\Str;
 
 class TenantLineLoginController extends Controller
 {
-  public function __construct(private tenantService $tenantService) {}
+  public function __construct(private TenantService $tenantService, private LineService $lineService) {}
 
   /**
    * Line Login 頁面
@@ -34,7 +35,7 @@ class TenantLineLoginController extends Controller
     session(['line_login_state' => $state]);
 
     // 構建 Line Login URL
-    $loginUrl = $this->buildLineLoginUrl($tenant, $state);
+    $loginUrl = $this->lineService->buildLineLoginUrl($tenant, $state);
 
     return view('content.tenant.line.tenant-line-login', [
       'tenant'    => $tenant,
@@ -94,7 +95,7 @@ class TenantLineLoginController extends Controller
 
     try {
       // 取得 Line 使用者資料
-      $lineUserData = $this->getLineUserData($tenant, $attributes['code']);
+      $lineUserData = $this->lineService->getLineUserData($tenant, $attributes['code']);
 
       if (!$lineUserData) {
         return view('content.tenant.line.tenant-line-login-error', [
@@ -108,10 +109,10 @@ class TenantLineLoginController extends Controller
       if ($existingLineUser) {
         // 已經綁定，顯示成功頁面
         return view('content.tenant.line.tenant-line-bind-success', [
-          'tenant' => $tenant,
-          'member' => $existingLineUser->member,
-          'lineUser' => $existingLineUser,
-          'isExisting' => true
+          'tenant'      => $tenant,
+          'member'      => $existingLineUser->member,
+          'lineUser'    => $existingLineUser,
+          'isExisting'  => true
         ]);
       }
 
@@ -119,204 +120,62 @@ class TenantLineLoginController extends Controller
       try {
         DB::beginTransaction();
 
-        // 創建會員（使用 Line 顯示名稱作為姓名，電話使用 Line User ID）
+        // 創建會員
         $member = Member::create([
-          'name' => $lineUserData['displayName'],
-          'phone' => 'LINE_' . $lineUserData['userId'], // 使用 Line User ID 作為電話識別
-          'email' => null, // Line 登入不提供 email
+          'name'  => $lineUserData['displayName'],
+          'phone' => 'LINE_' . $lineUserData['userId'],
+          'email' => null,
         ]);
 
         // 創建 Line 使用者綁定
         $lineUser = LineUser::create([
-          'line_user_id' => $lineUserData['userId'],
-          'member_id' => $member->id,
+          'line_user_id'  => $lineUserData['userId'],
+          'member_id'     => $member->id,
           'profile' => [
-            'displayName' => $lineUserData['displayName'],
-            'pictureUrl' => $lineUserData['pictureUrl'] ?? null,
+            'displayName'   => $lineUserData['displayName'],
+            'pictureUrl'    => $lineUserData['pictureUrl'] ?? null,
             'statusMessage' => $lineUserData['statusMessage'] ?? null,
           ],
         ]);
 
         DB::commit();
 
-        Log::info('Line 自動綁定成功', [
-          'tenant_id' => $tenant->id,
-          'line_user_id' => $lineUserData['userId'],
-          'member_id' => $member->id
+        Log::info('Line 綁定成功', [
+          'tenant_id'     => $tenant->id,
+          'line_user_id'  => $lineUserData['userId'],
+          'member_id'     => $member->id
         ]);
 
         // 顯示成功頁面
         return view('content.tenant.line.tenant-line-bind-success', [
-          'tenant' => $tenant,
-          'member' => $member,
-          'lineUser' => $lineUser,
-          'isExisting' => false
+          'tenant'      => $tenant,
+          'member'      => $member,
+          'lineUser'    => $lineUser,
+          'isExisting'  => false
         ]);
-      } catch (\Exception $e) {
+      } catch (\Throwable $e) {
         DB::rollBack();
 
         Log::error('Line 自動綁定失敗', [
-          'tenant_id' => $tenant->id,
-          'line_user_id' => $lineUserData['userId'],
-          'error' => $e->getMessage()
+          'tenant_id'     => $tenant->id,
+          'line_user_id'  => $lineUserData['userId'],
+          'error'         => $e->getMessage()
         ]);
 
         return view('content.tenant.line.tenant-line-login-error', [
           'message' => '自動綁定失敗：' . $e->getMessage()
         ]);
       }
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       Log::error('Line Login 處理失敗', [
         'tenant_id' => $tenant->id,
-        'error' => $e->getMessage(),
-        'trace' => $e->getTraceAsString()
+        'error'     => $e->getMessage(),
+        'trace'     => $e->getTraceAsString()
       ]);
 
       return view('content.tenant.line.tenant-line-login-error', [
         'message' => '處理 Line 登入時發生錯誤：' . $e->getMessage()
       ]);
     }
-  }
-
-
-  /**
-   * 顯示綁定成功頁面
-   */
-  public function showSuccess(Request $request)
-  {
-    $tenant = tenant();
-    $memberId = $request->get('member_id');
-    $lineUserId = $request->get('line_user_id');
-
-    $member = Member::find($memberId);
-    $lineUser = LineUser::where('line_user_id', $lineUserId)->first();
-
-    if (!$member || !$lineUser) {
-      return view('content.tenant.line.tenant-line-login-error', [
-        'message' => '找不到相關資料'
-      ]);
-    }
-
-    return view('content.tenant.line.tenant-line-bind-success', [
-      'tenant' => $tenant,
-      'member' => $member,
-      'lineUser' => $lineUser,
-      'isExisting' => false
-    ]);
-  }
-
-  /**
-   * 構建 Line Login URL
-   */
-  private function buildLineLoginUrl(Tenant $tenant, string $state): string
-  {
-    $params = http_build_query([
-      'client_id'     => $tenant->channel_id,
-      'redirect_uri'  => route('tenant.line.login.callback', ['tenant' => $tenant->id]),
-      'response_type' => 'code',
-      'scope'         => 'profile openid email',
-      'state'         => $state,
-      'nonce'         => Str::random(16)
-    ]);
-
-    return 'https://access.line.me/oauth2/v2.1/authorize?' . $params;
-  }
-
-  /**
-   * 取得 Line 使用者資料
-   */
-  private function getLineUserData(Tenant $tenant, string $code): ?array
-  {
-    // 取得 access token
-    $tokenResponse = $this->getAccessToken($tenant, $code);
-
-    if (!$tokenResponse) {
-      return null;
-    }
-
-    // 取得使用者資料
-    $userResponse = $this->getUserProfile($tokenResponse['access_token']);
-
-    if (!$userResponse) {
-      return null;
-    }
-
-    return [
-      'userId'        => $userResponse['userId'],
-      'displayName'   => $userResponse['displayName'],
-      'pictureUrl'    => $userResponse['pictureUrl'] ?? null,
-      'statusMessage' => $userResponse['statusMessage'] ?? null,
-      'access_token'  => $tokenResponse['access_token'],
-      'id_token'      => $tokenResponse['id_token'] ?? null,
-    ];
-  }
-
-  /**
-   * 交換授權碼取得 access token
-   */
-  private function getAccessToken(Tenant $tenant, string $code): ?array
-  {
-    $data = [
-      'grant_type'    => 'authorization_code',
-      'code'          => $code,
-      'redirect_uri'  => route('tenant.line.login.callback', ['tenant' => $tenant->id]),
-      'client_id'     => $tenant->channel_id,
-      'client_secret' => $tenant->channel_secret,
-    ];
-
-    $response = $this->makeHttpRequest('https://api.line.me/oauth2/v2.1/token', $data);
-
-    return $response ? json_decode($response, true) : null;
-  }
-
-  /**
-   * 取得使用者資料
-   */
-  private function getUserProfile(string $accessToken): ?array
-  {
-    $headers = [
-      'Authorization: Bearer ' . $accessToken
-    ];
-
-    $response = $this->makeHttpRequest('https://api.line.me/v2/profile', [], $headers);
-
-    return $response ? json_decode($response, true) : null;
-  }
-
-  /**
-   * 發送 HTTP 請求
-   */
-  private function makeHttpRequest(string $url, array $data = [], array $headers = []): ?string
-  {
-    $ch = curl_init();
-
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-
-    if (!empty($data)) {
-      curl_setopt($ch, CURLOPT_POST, true);
-      curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-    }
-
-    if (!empty($headers)) {
-      curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-    }
-
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-    curl_close($ch);
-
-    if ($httpCode !== 200) {
-      Log::error('Line API 請求失敗', [
-        'url' => $url,
-        'http_code' => $httpCode,
-        'response' => $response
-      ]);
-      return null;
-    }
-
-    return $response;
   }
 }

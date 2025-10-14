@@ -5,16 +5,11 @@ namespace App\Http\Controllers\Tenant;
 use App\Enums\Tenant\PermissionNameEnum;
 use Illuminate\Http\Request;
 use App\Models\Category;
-use App\Services\Tenant\categoryService;
+use App\Services\Tenant\CategoryService;
 
 class TenantCategoryController extends BaseTenantController
 {
-  protected $categoryService;
-
-  public function __construct(categoryService $categoryService)
-  {
-    $this->categoryService = $categoryService;
-  }
+  public function __construct(protected CategoryService $categoryService) {}
 
   /**
    * 分類管理頁面
@@ -38,7 +33,7 @@ class TenantCategoryController extends BaseTenantController
         'name'          => 'required|string|max:255',
         'status'        => 'required|string|max:255',
         'parent_id'     => 'nullable|exists:categories,id',
-      ],[],[
+      ], [], [
         'name'          => '分類名稱',
         'status'        => '狀態',
         'parent_id'     => '父分類',
@@ -76,7 +71,7 @@ class TenantCategoryController extends BaseTenantController
         'name'         => 'required|string|max:255',
         'status'       => 'required|string|max:255',
         'parent_id'    => 'nullable|exists:categories,id',
-      ],[],[
+      ], [], [
         'name'         => '分類名稱',
         'status'       => '狀態',
         'parent_id'    => '父分類',

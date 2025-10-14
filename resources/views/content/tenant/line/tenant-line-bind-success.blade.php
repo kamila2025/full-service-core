@@ -263,7 +263,7 @@
             <a href="#" class="btn btn-primary" onclick="window.close(); return false;">
                 關閉視窗
             </a>
-            <a href="{{ route('tenant.line.login') }}" class="btn btn-secondary">
+            <a href="{{ route('tenant.line.login', ['tenant' => $tenant->id]) }}" class="btn btn-secondary">
                 重新登入
             </a>
         </div>
