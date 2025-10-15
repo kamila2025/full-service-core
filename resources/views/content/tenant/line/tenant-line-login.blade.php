@@ -12,6 +12,24 @@
 
 @section('page-style')
     <link rel="stylesheet" href="{{ asset('assets/vendor/css/pages/page-auth.css') }}">
+    <style>
+        #loginBtn:hover .position-absolute {
+            background-color: rgba(0, 0, 0, 0.1) !important;
+        }
+
+        #loginBtn:active .position-absolute {
+            background-color: rgba(0, 0, 0, 0.3) !important;
+        }
+
+        #loginBtn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(6, 199, 85, 0.3);
+        }
+
+        #loginBtn:active {
+            transform: translateY(0);
+        }
+    </style>
 @endsection
 
 @section('vendor-script')
@@ -42,15 +60,14 @@
                         <h4 class="mb-4 text-center">Line 登入綁定</h4>
 
                         <div class="mb-3">
-                            <a href="{{ $loginUrl }}" class="btn d-grid w-100" id="loginBtn"
-                                style="background-color: #06C755; border: none; border-radius: 0.375rem; padding: 0.75rem 1.5rem; font-weight: 600; color: #FFFFFF; transition: all 0.3s ease; text-decoration: none; display: flex; align-items: center; justify-content: center;"
-                                onmouseover="this.style.backgroundColor='#05B34A'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(6, 199, 85, 0.3)'"
-                                onmouseout="this.style.backgroundColor='#06C755'; this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-                                <svg width="20" height="20" viewBox="0 0 24 24" style="margin-right: 8px;">
-                                    <path fill="#FFFFFF"
-                                        d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-6.741.018c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.755c.348 0 .63.283.63.629 0 .344-.282.629-.63.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314" />
-                                </svg>
-                                與LINE連動
+                            <a href="{{ $loginUrl }}" class="btn w-100 position-relative overflow-hidden" id="loginBtn"
+                                style="background-color: #06C755; border: 1px solid #06C755; border-radius: 0.375rem; padding: 0.75rem 1.5rem; font-weight: 600; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                <div class="position-absolute top-0 start-0 w-100 h-100 rounded"
+                                    style="background-color: rgba(0, 0, 0, 0); transition: background-color 0.3s ease;">
+                                </div>
+                                <img src="{{ asset('assets/img/icons/line.png') }}" alt="Line"
+                                    style="width: 16px; height: 16px; margin-right: 8px; position: relative; z-index: 1;">
+                                <span style="position: relative; z-index: 1;">使用 LINE 帳號登入</span>
                             </a>
                         </div>
 
@@ -76,9 +93,6 @@
                                 </li>
                                 <li class="mb-2">
                                     <i class="fas fa-check text-success me-2"></i>登入後將自動取得您的 Line 資料
-                                </li>
-                                <li class="mb-2">
-                                    <i class="fas fa-check text-success me-2"></i>填寫會員資訊完成綁定
                                 </li>
                                 <li class="mb-0">
                                     <i class="fas fa-check text-success me-2"></i>綁定後即可享受專屬服務
