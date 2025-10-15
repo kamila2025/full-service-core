@@ -3,16 +3,29 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use \Illuminate\Database\Eloquent\SoftDeletes;
 
 class Member extends Model
 {
+  use SoftDeletes;
+
   protected $guarded = [];
 
-  /**
-   * 關聯的 Line 用戶
-   */
-  public function lineUsers()
+  protected $casts = [
+    'birthday' => 'date',
+    'gender'   => \App\Enums\Tenant\Member\MemberGenderEnum::class,
+    'status'   => \App\Enums\Tenant\Member\MemberStatusEnum::class,
+  ];
+
+  public function lineUser()
   {
-    return $this->hasMany(LineUser::class);
+    return $this->belongsTo(LineUser::class);
+  }
+
+  protected static function booted()
+  {
+    static::creating(function ($model) {
+      $model->status = \App\Enums\Tenant\Member\MemberStatusEnum::啟用;
+    });
   }
 }

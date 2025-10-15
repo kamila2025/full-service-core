@@ -52,6 +52,10 @@ Route::group([
       Route::get('/', [\App\Http\Controllers\Tenant\TenantDashboardController::class, 'index'])->name('tenant.dashboard.index');
       Route::get('/dashboard', [\App\Http\Controllers\Tenant\TenantDashboardController::class, 'index'])->name('tenant.dashboard.index');
 
+      // 會員管理
+      Route::get('/members/export', [\App\Http\Controllers\Tenant\TenantMemberController::class, 'export'])->name('tenant.members.export');
+      Route::resource('members', \App\Http\Controllers\Tenant\TenantMemberController::class)->names('tenant.members');
+
       // 商品管理
       Route::post('categories/sort', [\App\Http\Controllers\Tenant\TenantCategoryController::class, 'updateSort'])->name('tenant.categories.sort');
       Route::get('categories/tree', [\App\Http\Controllers\Tenant\TenantCategoryController::class, 'getCategoryTree'])->name('tenant.categories.tree');
