@@ -12,6 +12,15 @@ $(function () {
   const searchName = $('#searchName');
   const searchPhone = $('#searchPhone');
   const searchEmail = $('#searchEmail');
+  const searchGender = $('#searchGender');
+  const searchZipcode = $('#searchZipcode');
+  const searchCity = $('#searchCity');
+  const searchDistrict = $('#searchDistrict');
+  const searchStatus = $('#searchStatus');
+  const searchBirthdayStartDate = $('#searchBirthdayStartDate');
+  const searchBirthdayEndDate = $('#searchBirthdayEndDate');
+  const searchCreatedStartDate = $('#searchCreatedStartDate');
+  const searchCreatedEndDate = $('#searchCreatedEndDate');
   const searchBtn = $('#searchBtn');
   const resetBtn = $('#resetBtn');
 
@@ -30,6 +39,15 @@ $(function () {
           d.name = searchName.val();
           d.phone = searchPhone.val();
           d.email = searchEmail.val();
+          d.gender = searchGender.val();
+          d.zipcode = searchZipcode.val();
+          d.city = searchCity.val();
+          d.district = searchDistrict.val();
+          d.status = searchStatus.val();
+          d.birthday_start = searchBirthdayStartDate.val();
+          d.birthday_end = searchBirthdayEndDate.val();
+          d.created_start = searchCreatedStartDate.val();
+          d.created_end = searchCreatedEndDate.val();
         },
         error: function (xhr, error, thrown) {
           Swal.fire({
@@ -40,8 +58,38 @@ $(function () {
           });
         }
       },
-      columns: [{ data: 'member_name' }, { data: 'member_email' }, { data: 'member_created_at' }, { data: null }],
+      columns: [
+        { data: 'member_name' },
+        { data: 'member_email' },
+        { data: 'member_phone' },
+        { data: 'member_gender' },
+        { data: 'member_birthday' },
+        { data: 'member_address' },
+        { data: 'member_status' },
+        { data: 'member_created_at' },
+        { data: null }
+      ],
       columnDefs: [
+        {
+          targets: 0,
+          orderable: false,
+          searchable: false,
+          render: function (data, type, full, meta) {
+            return `<a href="${apiUrl}/${full.member_id}/edit">${full.member_name}</a>`;
+          }
+        },
+        {
+          targets: 3,
+          render: function (data, type, full, meta) {
+            return `<span class="badge ${full['member_gender_badge']}">${full['member_gender']}</span>`;
+          }
+        },
+        {
+          targets: 6,
+          render: function (data, type, full, meta) {
+            return `<span class="badge ${full['member_status_badge']}">${full['member_status']}</span>`;
+          }
+        },
         {
           targets: -1,
           orderable: false,
@@ -118,6 +166,15 @@ $(function () {
     searchName.val('');
     searchPhone.val('');
     searchEmail.val('');
+    searchGender.val('').trigger('change');
+    searchZipcode.val('');
+    searchCity.val('');
+    searchDistrict.val('');
+    searchStatus.val('').trigger('change');
+    searchBirthdayStartDate.val('');
+    searchBirthdayEndDate.val('');
+    searchCreatedStartDate.val('');
+    searchCreatedEndDate.val('');
     table.draw();
   });
 

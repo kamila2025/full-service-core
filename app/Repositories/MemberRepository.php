@@ -31,11 +31,49 @@ class MemberRepository extends Repository
     });
 
     $this->model = $this->model->when($attributes['phone'] ?? false, function ($query) use ($attributes) {
-      $query->where('phone', $attributes['phone']);
+      $query->where('phone', 'like', '%' . $attributes['phone'] . '%');
     });
 
     $this->model = $this->model->when($attributes['email'] ?? false, function ($query) use ($attributes) {
-      $query->where('email', $attributes['email']);
+      $query->where('email', 'like', '%' . $attributes['email'] . '%');
+    });
+
+    $this->model = $this->model->when($attributes['gender'] ?? false, function ($query) use ($attributes) {
+      $query->where('gender', $attributes['gender']);
+    });
+
+    $this->model = $this->model->when($attributes['zipcode'] ?? false, function ($query) use ($attributes) {
+      $query->where('zipcode', 'like', '%' . $attributes['zipcode'] . '%');
+    });
+
+    $this->model = $this->model->when($attributes['city'] ?? false, function ($query) use ($attributes) {
+      $query->where('city', 'like', '%' . $attributes['city'] . '%');
+    });
+
+    $this->model = $this->model->when($attributes['district'] ?? false, function ($query) use ($attributes) {
+      $query->where('district', 'like', '%' . $attributes['district'] . '%');
+    });
+
+    $this->model = $this->model->when($attributes['status'] ?? false, function ($query) use ($attributes) {
+      $query->where('status', $attributes['status']);
+    });
+
+    // 生日範圍搜尋
+    $this->model = $this->model->when($attributes['birthday_start'] ?? false, function ($query) use ($attributes) {
+      $query->where('birthday', '>=', $attributes['birthday_start']);
+    });
+
+    $this->model = $this->model->when($attributes['birthday_end'] ?? false, function ($query) use ($attributes) {
+      $query->where('birthday', '<=', $attributes['birthday_end']);
+    });
+
+    // 建立時間範圍搜尋
+    $this->model = $this->model->when($attributes['created_start'] ?? false, function ($query) use ($attributes) {
+      $query->where('created_at', '>=', $attributes['created_start']);
+    });
+
+    $this->model = $this->model->when($attributes['created_end'] ?? false, function ($query) use ($attributes) {
+      $query->where('created_at', '<=', $attributes['created_end']);
     });
 
     return $this->model

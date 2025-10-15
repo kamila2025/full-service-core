@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Tenant;
 
 use App\Enums\Tenant\PermissionNameEnum;
+use App\Helpers\TaiwanCities;
 use Illuminate\Http\Request;
 use App\Services\Tenant\MemberService;
 use App\Repositories\MemberRepository;
@@ -21,21 +22,49 @@ class TenantMemberController extends BaseTenantController
 
     if ($request->ajax()) {
       $attributes = $request->validate([
-        'name'   => 'nullable|string|max:255',
-        'phone'  => 'nullable|string|max:255',
-        'email'  => 'nullable|string|max:255',
+        'name'                => 'nullable|string|max:255',
+        'phone'               => 'nullable|string|max:255',
+        'email'               => 'nullable|string|max:255',
+        'gender'              => 'nullable|string|in:male,female',
+        'zipcode'             => 'nullable|string|max:10',
+        'city'                => 'nullable|string|max:100',
+        'district'            => 'nullable|string|max:100',
+        'status'              => 'nullable|string|in:active,inactive',
+        'birthday_start'      => 'nullable|date',
+        'birthday_end'        => 'nullable|date',
+        'created_start'       => 'nullable|date',
+        'created_end'         => 'nullable|date',
       ]);
 
       $records = $this->memberService->getMembers($attributes);
 
       return DataTables::of($records)
-        ->addColumn('member_name',       fn($record) => $record->name)
-        ->addColumn('member_email',      fn($record) => $record->email)
-        ->addColumn('member_created_at', fn($record) => $record->created_at->format('Y-m-d H:i:s'))
+        ->addColumn('member_id',            fn($record) => $record->id ?? null)
+        ->addColumn('member_name',          fn($record) => $record->name ?? null)
+        ->addColumn('member_email',         fn($record) => $record->email ?? null)
+        ->addColumn('member_phone',         fn($record) => $record->phone ?? null)
+        ->addColumn('member_gender',        fn($record) => $record->gender?->label() ?? null)
+        ->addColumn('member_gender_badge',  fn($record) => $record->gender?->badgeClass() ?? null)
+        ->addColumn('member_birthday',      fn($record) => $record->birthday?->format('Y-m-d') ?? null)
+        ->addColumn('member_address',       fn($record) => $record->zipcode . $record->city . $record->district . $record->address ?? null)
+        ->addColumn('member_status',        fn($record) => $record->status?->label() ?? null)
+        ->addColumn('member_status_badge',  fn($record) => $record->status?->badgeClass() ?? null)
+        ->addColumn('member_created_at',    fn($record) => $record->created_at?->format('Y-m-d H:i:s') ?? null)
         ->make(true);
     }
 
-    return view('content.tenant.member.tenant-member');
+    // 獲取所有城市和地區資料
+    $allCitiesAndDistricts = TaiwanCities::getAllCitiesAndDistricts();
+    $allDistricts = [];
+    foreach ($allCitiesAndDistricts as $districts) {
+      $allDistricts = array_merge($allDistricts, $districts);
+    }
+    $allDistricts = array_unique($allDistricts);
+
+    return view('content.tenant.member.tenant-member', [
+      'cities'    => TaiwanCities::getCities(),
+      'districts' => $allDistricts,
+    ]);
   }
 
   /**
