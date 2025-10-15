@@ -124,8 +124,6 @@ class TenantLineLoginController extends Controller
         // 創建會員
         $member = Member::create([
           'name'  => $lineUserData['displayName'],
-          'phone' => 'LINE_' . $lineUserData['userId'],
-          'email' => null,
         ]);
 
         // 創建 Line 使用者綁定
