@@ -38,9 +38,10 @@ class TenantLineLoginController extends Controller
     $loginUrl = $this->lineService->buildLineLoginUrl($tenant, $state);
 
     return view('content.tenant.line.tenant-line-login', [
-      'tenant'    => $tenant,
-      'loginUrl'  => $loginUrl,
-      'state'     => $state
+      'tenant'      => $tenant,
+      'loginUrl'    => $loginUrl,
+      'state'       => $state,
+      'pageConfigs' => ['myLayout' => 'blank'],
     ]);
   }
 
