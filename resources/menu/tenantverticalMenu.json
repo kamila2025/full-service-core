@@ -8,6 +8,16 @@
       "permission": "manage"
     },
     {
+      "menuHeader": "會員管理"
+    },
+    {
+      "url": "admin/members",
+      "icon": "menu-icon tf-icons bx bxs-user",
+      "name": "會員管理",
+      "slug": "tenant.members.index",
+      "permission": "members"
+    },
+    {
       "menuHeader": "系統設定"
     },
     {
