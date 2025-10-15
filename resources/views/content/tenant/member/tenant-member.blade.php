@@ -135,8 +135,11 @@
                     <button type="button" id="resetBtn" class="btn btn-outline-secondary me-2">
                         <i class="bx bx-refresh me-1"></i>重置
                     </button>
-                    <button type="button" id="searchBtn" class="btn btn-primary">
+                    <button type="button" id="searchBtn" class="btn btn-primary me-2">
                         <i class="bx bx-search me-1"></i>搜尋
+                    </button>
+                    <button type="button" id="exportBtn" class="btn btn-success">
+                        <i class="bx bx-export me-1"></i>匯出
                     </button>
                 </div>
             </div>
@@ -148,7 +151,7 @@
             <table class="member-datatable table border-top">
                 <thead>
                     <tr>
-                        <th>會員姓名</th>
+                        <th>會員名稱</th>
                         <th>會員信箱</th>
                         <th>會員手機</th>
                         <th>會員性別</th>

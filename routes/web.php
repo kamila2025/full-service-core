@@ -53,6 +53,7 @@ Route::group([
       Route::get('/dashboard', [\App\Http\Controllers\Tenant\TenantDashboardController::class, 'index'])->name('tenant.dashboard.index');
 
       // 會員管理
+      Route::get('/members/export', [\App\Http\Controllers\Tenant\TenantMemberController::class, 'export'])->name('tenant.members.export');
       Route::resource('members', \App\Http\Controllers\Tenant\TenantMemberController::class)->names('tenant.members');
 
       // 商品管理

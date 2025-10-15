@@ -23,6 +23,7 @@ $(function () {
   const searchCreatedEndDate = $('#searchCreatedEndDate');
   const searchBtn = $('#searchBtn');
   const resetBtn = $('#resetBtn');
+  const exportBtn = $('#exportBtn');
 
   if (dataTables.length) {
     var table = dataTables.DataTable({
@@ -176,6 +177,29 @@ $(function () {
     searchCreatedStartDate.val('');
     searchCreatedEndDate.val('');
     table.draw();
+  });
+
+  // 匯出事件
+  exportBtn.on('click', function () {
+    const params = $.param({
+      searchName: searchName.val(),
+      searchPhone: searchPhone.val(),
+      searchEmail: searchEmail.val(),
+      searchGender: searchGender.val(),
+      searchZipcode: searchZipcode.val(),
+      searchCity: searchCity.val(),
+      searchDistrict: searchDistrict.val(),
+      searchStatus: searchStatus.val(),
+      searchBirthdayStartDate: searchBirthdayStartDate.val(),
+      searchBirthdayEndDate: searchBirthdayEndDate.val(),
+      searchCreatedStartDate: searchCreatedStartDate.val(),
+      searchCreatedEndDate: searchCreatedEndDate.val()
+    });
+
+    const queryString = new URLSearchParams(params).toString();
+    const exportUrl = `${apiUrl}/export?${queryString}`;
+
+    window.location.href = exportUrl;
   });
 
   // 刪除商品

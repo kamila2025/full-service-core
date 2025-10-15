@@ -198,4 +198,31 @@ class TenantMemberController extends BaseTenantController
       return $this->errorResponse('會員刪除失敗，請聯絡管理者', null, 500);
     }
   }
+
+  /**
+   * 匯出會員資料
+   */
+  public function export(Request $request)
+  {
+    $attributes = $request->validate([
+      'name'                => 'nullable|string|max:255',
+      'phone'               => 'nullable|string|max:255',
+      'email'               => 'nullable|string|max:255',
+      'gender'              => 'nullable|string|in:male,female',
+      'zipcode'             => 'nullable|string|max:10',
+      'city'                => 'nullable|string|max:100',
+      'district'            => 'nullable|string|max:100',
+      'status'              => 'nullable|string|in:active,inactive',
+      'birthday_start'      => 'nullable|date',
+      'birthday_end'        => 'nullable|date',
+      'created_start'       => 'nullable|date',
+      'created_end'         => 'nullable|date',
+    ]);
+
+    try {
+      return $this->memberService->exportMembers($attributes);
+    } catch (\Throwable $e) {
+      return $this->errorResponse('匯出失敗，請聯絡管理者', null, 500);
+    }
+  }
 }
