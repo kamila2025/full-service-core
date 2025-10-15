@@ -36,6 +36,31 @@
 @endsection
 
 @section('page-script')
+    <script>
+        $(document).ready(function() {
+            // Line 登入按鈕點擊事件
+            $('#loginBtn').on('click', function(e) {
+                // 顯示載入動畫
+                $('#loading').removeClass('d-none');
+                $('#loginBtn').addClass('d-none');
+
+                // 隱藏錯誤訊息
+                $('#error').addClass('d-none');
+            });
+
+            // 檢查是否有錯誤參數
+            const urlParams = new URLSearchParams(window.location.search);
+            const error = urlParams.get('error');
+            const errorDescription = urlParams.get('error_description');
+
+            if (error) {
+                $('#loading').addClass('d-none');
+                $('#loginBtn').removeClass('d-none');
+                $('#error').removeClass('d-none');
+                $('#errorMessage').text(errorDescription || '登入過程中發生錯誤，請重新嘗試');
+            }
+        });
+    </script>
 @endsection
 
 @section('content')
