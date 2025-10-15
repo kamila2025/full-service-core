@@ -4,13 +4,13 @@ namespace App\Enums\Tenant\Member;
 
 enum MemberStatusEnum: string
 {
-  case 正常 = 'active';
+  case 啟用 = 'active';
   case 停用 = 'inactive';
 
   public function label(): string
   {
     return match ($this) {
-      self::正常 => '正常',
+      self::啟用 => '啟用',
       self::停用 => '停用',
     };
   }
@@ -18,7 +18,7 @@ enum MemberStatusEnum: string
   public function badgeClass(): string
   {
     return match ($this) {
-      self::正常 => 'bg-label-primary',
+      self::啟用 => 'bg-label-primary',
       self::停用 => 'bg-label-danger',
     };
   }

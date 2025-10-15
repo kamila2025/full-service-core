@@ -17,15 +17,15 @@ class Member extends Model
     'status'   => \App\Enums\Tenant\Member\MemberStatusEnum::class,
   ];
 
-  public function lineUsers()
+  public function lineUser()
   {
-    return $this->hasMany(LineUser::class);
+    return $this->belongsTo(LineUser::class);
   }
 
   protected static function booted()
   {
     static::creating(function ($model) {
-      $model->status = \App\Enums\Tenant\Member\MemberStatusEnum::正常;
+      $model->status = \App\Enums\Tenant\Member\MemberStatusEnum::啟用;
     });
   }
 }
