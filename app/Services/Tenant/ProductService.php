@@ -79,9 +79,9 @@ class ProductService
         $this->handleImageUpload($product, $attributes['images']);
       }
 
-      if (isset($attributes['variants'])) {
-        $this->handleVariants($product, $attributes['variants']);
-      }
+      // if (isset($attributes['variants'])) {
+      //   $this->handleVariants($product, $attributes['variants']);
+      // }
 
       DB::commit();
 

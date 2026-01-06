@@ -136,7 +136,7 @@
                         <i class="bx bx-refresh me-1"></i>重置
                     </button>
                     <button type="button" id="searchBtn" class="btn btn-primary me-2">
-                        <i class="bx bx-search me-1"></i>搜尋
+                        <i class="bx bx-search me-1"></i>查詢
                     </button>
                     <button type="button" id="exportBtn" class="btn btn-success">
                         <i class="bx bx-export me-1"></i>匯出

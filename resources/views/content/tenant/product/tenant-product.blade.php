@@ -19,7 +19,10 @@
 @section('page-script')
     <script>
         // 初始化 select2
-        $('.select2').select2();
+        $('.select2').select2({
+            placeholder: '請選擇',
+            allowClear: true,
+        });
     </script>
     <script src="{{ asset('js/tenant/product/tenant-product.js?v=' . time()) }}"></script>
 @endsection
@@ -65,11 +68,11 @@
             </div>
             <div class="row g-3 mt-2">
                 <div class="col-12 d-flex justify-content-end">
-                    <button type="button" id="searchBtn" class="btn btn-primary me-2">
-                        <i class="bx bx-search me-1"></i>搜尋
-                    </button>
-                    <button type="button" id="resetBtn" class="btn btn-outline-secondary">
+                    <button type="button" id="resetBtn" class="btn btn-outline-secondary me-2">
                         <i class="bx bx-refresh me-1"></i>重置
+                    </button>
+                    <button type="button" id="searchBtn" class="btn btn-primary me-2">
+                        <i class="bx bx-search me-1"></i>查詢
                     </button>
                 </div>
             </div>

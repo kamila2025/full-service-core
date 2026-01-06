@@ -4,7 +4,7 @@
 
 @extends('layouts/layoutMaster')
 
-@section('title', '商品分類')
+@section('title', '分類管理')
 
 @section('vendor-style')
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css') }}">
@@ -68,7 +68,7 @@
 @section('content')
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
         <div class="d-flex flex-column justify-content-center">
-            <h3 class="mb-1"> 商品分類 </h3>
+            <h3 class="mb-1"> 分類管理 </h3>
         </div>
         <div class="d-flex align-content-center flex-wrap gap-3">
             <a href="javascript:void(0)" class="btn btn-primary" id="addMainCategoryBtn">

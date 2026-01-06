@@ -93,7 +93,7 @@
                     <!-- 商品圖片 -->
 
                     <!-- 商品規格 -->
-                    <div class="card mb-4">
+                    {{-- <div class="card mb-4">
                         <div class="card-header d-flex justify-content-between">
                             <h5 class="card-title m-0">商品規格</h5>
                             <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
@@ -106,7 +106,7 @@
                                 <p class="mb-0 text-muted">為您的商品新增規格，例：尺寸、顏色</p>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                     <!-- 商品規格 -->
 
                     <!-- 商品價格 -->
@@ -135,8 +135,7 @@
                                         <div class="col-6 mb-2">
                                             <label for="cost_price" class="form-label">成本價</label>
                                             <input type="number" id="cost_price" name="cost_price" class="form-control"
-                                                value="{{ isset($product) ? $variant->cost_price : '0' }}"
-                                                min="0">
+                                                value="{{ isset($product) ? $variant->cost_price : '0' }}" min="0">
                                         </div>
                                     @endforeach
                                 @else

@@ -18,6 +18,23 @@
       "permission": "members"
     },
     {
+      "menuHeader": "商品管理"
+    },
+    {
+      "url": "admin/categories",
+      "icon": "menu-icon tf-icons bx bxs-category",
+      "name": "分類管理",
+      "slug": "tenant.categories.index",
+      "permission": "categories"
+    },
+    {
+      "url": "admin/products",
+      "icon": "menu-icon tf-icons bx bxs-shopping-bag",
+      "name": "商品管理",
+      "slug": "tenant.products.index",
+      "permission": "products"
+    },
+    {
       "menuHeader": "系統設定"
     },
     {
