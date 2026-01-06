@@ -44,6 +44,10 @@ Route::group([
 
   // 租戶前台 livewire 路由
   Route::get('/', App\Livewire\Home::class)->name('tenant.frontend.home');
+  Route::get('/categories', App\Livewire\Categories::class)->name('tenant.frontend.categories');
+  Route::get('/categories/{category_id}', App\Livewire\Categories::class)->name('tenant.frontend.categories.show');
+
+  Route::get('/products/{product_id}', App\Livewire\Products::class)->name('tenant.frontend.products.show');
 
   Route::prefix('admin')->middleware([])->group(function () {
     // Auth

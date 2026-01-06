@@ -14,7 +14,7 @@ return new class extends Migration
     Schema::create('products', function (Blueprint $table) {
       $table->id();
       $table->string('name');
-      $table->text('description')->nullable()->comment('商品描述');
+      $table->longText('description')->nullable()->comment('商品描述');
       $table->text('image_url')->nullable()->comment('商品圖片');
       $table->string('inventory_management')->nullable()->comment('庫存管理方式');
       $table->integer('sort')->default(0)->comment('排序');

@@ -44,7 +44,12 @@ class TenantProductController extends BaseTenantController
     }
 
     return view('content.tenant.product.tenant-product', [
-      'categories' => Category::all(),
+      'categories' => Category::whereNotNull('parent_id')
+        ->whereHas('parent', function ($query) {
+          $query->whereNull('parent_id');
+        })
+        ->orderBy('sort', 'asc')
+        ->get(),
     ]);
   }
 
@@ -56,7 +61,13 @@ class TenantProductController extends BaseTenantController
     $this->authorizePermission(PermissionNameEnum::商品管理);
 
     return view('content.tenant.product.tenant-product-add', [
-      'categories' => Category::all(),
+      'categories' => Category::whereNotNull('parent_id')
+        ->whereHas('parent', function ($query) {
+          $query->whereNull('parent_id');
+        })
+        ->where('status', \App\Enums\Tenant\Category\CategoryStatusEnum::已發佈)
+        ->orderBy('sort', 'asc')
+        ->get(),
     ]);
   }
 
@@ -70,7 +81,7 @@ class TenantProductController extends BaseTenantController
     try {
       $attributes = $request->validate([
         'name'                        => 'required|string|max:255',
-        'description'                 => 'nullable|string|max:255',
+        'description'                 => 'nullable|string',
         'image_url'                   => 'nullable|string|max:255',
         'inventory_management'        => 'nullable|string|max:255',
         'status'                      => 'required|string|max:255',
@@ -140,7 +151,13 @@ class TenantProductController extends BaseTenantController
 
     return view('content.tenant.product.tenant-product-add', [
       'product'     => $product,
-      'categories'  => Category::all(),
+      'categories'  => Category::whereNotNull('parent_id')
+        ->whereHas('parent', function ($query) {
+          $query->whereNull('parent_id');
+        })
+        ->where('status', \App\Enums\Tenant\Category\CategoryStatusEnum::已發佈)
+        ->orderBy('sort', 'asc')
+        ->get(),
     ]);
   }
 
@@ -154,7 +171,7 @@ class TenantProductController extends BaseTenantController
     try {
       $attributes = $request->validate([
         'name'                        => 'required|string|max:255',
-        'description'                 => 'nullable|string|max:255',
+        'description'                 => 'nullable|string',
         'image_url'                   => 'nullable|string|max:255',
         'status'                      => 'required|string|max:255',
         'inventory_management'        => 'nullable|string|max:255',

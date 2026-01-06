@@ -11,7 +11,8 @@
             <!-- Desktop Menu -->
             <div class="hidden md:flex space-x-8 items-center">
                 <a href="#home" class="text-gray-600 hover:text-brand-600 font-medium transition">首頁</a>
-                <a href="#products" class="text-gray-600 hover:text-brand-600 font-medium transition">熱銷商品</a>
+                <a href="{{ route('tenant.frontend.categories', ['tenant' => tenant('id'), 'slug' => 'all']) }}"
+                    class="text-gray-600 hover:text-brand-600 font-medium transition">商品專區</a>
                 <a href="#features" class="text-gray-600 hover:text-brand-600 font-medium transition">服務特色</a>
                 <a href="#contact" class="text-gray-600 hover:text-brand-600 font-medium transition">聯絡我們</a>
             </div>
