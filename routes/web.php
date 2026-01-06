@@ -41,6 +41,10 @@ Route::group([
     return Stancl\Tenancy\Features\UserImpersonation::makeResponse($token);
   })->name('tenants.impersonate.login');
 
+
+  // 租戶前台 livewire 路由
+  Route::get('/', App\Livewire\Home::class)->name('tenant.frontend.home');
+
   Route::prefix('admin')->middleware([])->group(function () {
     // Auth
     Route::get('/login', [\App\Http\Controllers\Tenant\TenantAuthController::class, 'index'])->name('tenant.login.index');
