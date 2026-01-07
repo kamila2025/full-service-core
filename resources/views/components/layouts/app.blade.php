@@ -76,11 +76,13 @@
     </style>
 </head>
 
-<body class="bg-gray-50 text-gray-800 font-sans antialiased">
+<body class="bg-gray-50 text-gray-800 font-sans antialiased flex flex-col min-h-screen">
     <!-- 導航列 -->
     @include('components.layouts.navbar')
 
-    {{ $slot }}
+    <main class="flex-grow">
+        {{ $slot }}
+    </main>
 
     <!-- Footer -->
     @include('components.layouts.footer')
