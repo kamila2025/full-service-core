@@ -159,6 +159,12 @@ $(function () {
 
     fv.validate().then(function (status) {
       if (status === 'Valid') {
+        // 確保 Quill editor 的內容已同步到隱藏的 input
+        if (typeof window.editor !== 'undefined' && window.editor) {
+          const editorContent = window.editor.root.innerHTML;
+          $('#description').val(editorContent);
+        }
+
         const formData = new FormData(productForm[0]);
         const formObject = Object.fromEntries(formData.entries());
 
