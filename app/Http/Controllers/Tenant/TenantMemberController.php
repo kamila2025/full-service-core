@@ -124,7 +124,7 @@ class TenantMemberController extends BaseTenantController
   {
     $this->authorizePermission(PermissionNameEnum::會員管理);
 
-    $member = $this->memberRepository->findById($id);
+    $member = $this->memberService->getMemberById($id);
 
     return $this->successResponse('會員取得成功', ['member' => $member], 200);
   }
@@ -136,7 +136,7 @@ class TenantMemberController extends BaseTenantController
   {
     $this->authorizePermission(PermissionNameEnum::會員管理);
 
-    $member = $this->memberRepository->findById($id);
+    $member = $this->memberService->getMemberById($id);
 
     return view('content.tenant.member.tenant-member-add', [
       'member' => $member,

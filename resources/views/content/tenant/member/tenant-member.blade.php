@@ -60,15 +60,15 @@
             <div class="row g-3">
                 <div class="col-md-2">
                     <label for="searchName" class="form-label">會員名稱</label>
-                    <input type="text" id="searchName" class="form-control" placeholder="搜尋會員名稱...">
+                    <input type="text" id="searchName" class="form-control">
                 </div>
                 <div class="col-md-2">
                     <label for="searchEmail" class="form-label">會員信箱</label>
-                    <input type="text" id="searchEmail" class="form-control" placeholder="搜尋會員信箱...">
+                    <input type="text" id="searchEmail" class="form-control">
                 </div>
                 <div class="col-md-2">
                     <label for="searchPhone" class="form-label">會員手機</label>
-                    <input type="text" id="searchPhone" class="form-control" placeholder="搜尋會員手機...">
+                    <input type="text" id="searchPhone" class="form-control">
                 </div>
                 <div class="col-md-2">
                     <label for="searchGender" class="form-label">會員性別</label>
@@ -90,7 +90,7 @@
                 </div>
                 <div class="col-md-2">
                     <label for="searchStatus" class="form-label">郵遞區號</label>
-                    <input type="text" id="searchZipcode" class="form-control" placeholder="搜尋郵遞區號...">
+                    <input type="text" id="searchZipcode" class="form-control">
                 </div>
                 <div class="col-md-2">
                     <label for="searchCity" class="form-label">會員城市</label>
