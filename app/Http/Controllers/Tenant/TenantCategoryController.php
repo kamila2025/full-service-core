@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Tenant;
 
 use App\Enums\Tenant\PermissionNameEnum;
 use Illuminate\Http\Request;
-use App\Models\Category;
 use App\Services\Tenant\CategoryService;
 
 class TenantCategoryController extends BaseTenantController
@@ -30,13 +29,13 @@ class TenantCategoryController extends BaseTenantController
 
     try {
       $attributes = $request->validate([
-        'name'          => 'required|string|max:255',
-        'status'        => 'required|string|max:255',
-        'parent_id'     => 'nullable|exists:categories,id',
+        'name'      => 'required|string|max:255',
+        'status'    => 'required|string|max:255',
+        'parent_id' => 'nullable|exists:categories,id',
       ], [], [
-        'name'          => '分類名稱',
-        'status'        => '狀態',
-        'parent_id'     => '父分類',
+        'name'      => '分類名稱',
+        'status'    => '狀態',
+        'parent_id' => '主分類',
       ]);
 
       $category = $this->categoryService->createCategory($attributes);
@@ -54,7 +53,7 @@ class TenantCategoryController extends BaseTenantController
   {
     $this->authorizePermission(PermissionNameEnum::分類管理);
 
-    $category = Category::findOrFail($id);
+    $category = $this->categoryService->getCategoryById($id);
 
     return $this->successResponse('分類取得成功', ['category' => $category], 200);
   }
@@ -68,13 +67,13 @@ class TenantCategoryController extends BaseTenantController
 
     try {
       $attributes = $request->validate([
-        'name'         => 'required|string|max:255',
-        'status'       => 'required|string|max:255',
-        'parent_id'    => 'nullable|exists:categories,id',
+        'name'      => 'required|string|max:255',
+        'status'    => 'required|string|max:255',
+        'parent_id' => 'nullable|exists:categories,id',
       ], [], [
-        'name'         => '分類名稱',
-        'status'       => '狀態',
-        'parent_id'    => '父分類',
+        'name'      => '分類名稱',
+        'status'    => '狀態',
+        'parent_id' => '主分類',
       ]);
 
       $category = $this->categoryService->updateCategory($id, $attributes);
@@ -108,19 +107,7 @@ class TenantCategoryController extends BaseTenantController
   {
     $this->authorizePermission(PermissionNameEnum::分類管理);
 
-    $categories = Category::orderBy('sort')->get();
-
-    $categories = $categories->map(function ($category) {
-      return [
-        'id'            => $category->id,
-        'name'          => $category->name,
-        'parent_id'     => $category->parent_id,
-        'sort'          => $category->sort,
-        'status_name'   => $category->status->name,
-        'status_badge'  => $category->status->badgeClass(),
-        'product_count' => $category->products->count(),
-      ];
-    });
+    $categories = $this->categoryService->getCategoryTree();
 
     return $this->successResponse('分類取得成功', $categories, 200);
   }

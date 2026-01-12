@@ -11,7 +11,7 @@ use Yajra\DataTables\Facades\DataTables;
 
 class TenantMemberController extends BaseTenantController
 {
-  public function __construct(protected MemberService $memberService, protected MemberRepository $memberRepository) {}
+  public function __construct(protected MemberService $memberService) {}
 
   /**
    * 會員管理頁面

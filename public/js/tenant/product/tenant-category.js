@@ -96,7 +96,7 @@ $(function () {
             </div>
             <div class="d-flex align-items-center gap-2">
               ${
-                level === 2
+                level === 1
                   ? ''
                   : `
                 <button class='btn btn-sm btn-outline-primary add-child' data-id='${n.id}' title='新增子分類'>

@@ -36,5 +36,9 @@ class Category extends Model
         $model->sort = is_null($maxSort) ? 1 : $maxSort + 1;
       }
     });
+
+    static::deleted(function ($model) {
+      $model->children()->delete();
+    });
   }
 }
