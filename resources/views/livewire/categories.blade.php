@@ -103,7 +103,10 @@
                                 $imageUrl = $firstImage
                                     ? asset('storage/tenants/' . tenant('id') . '/' . $firstImage->url)
                                     : 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80';
-                                $minPrice = $product->variants->min('price') ?? 0;
+                                $minVariant = $product->variants->sortBy('price')->first();
+                                $minPrice = $minVariant ? $minVariant->price : 0;
+                                $originalPrice =
+                                    $minVariant && $minVariant->compare_at_price ? $minVariant->compare_at_price : null;
                                 $firstCategory = $product->categories->first();
                             @endphp
                             <div
@@ -127,17 +130,22 @@
                                 </div>
                                 <div class="p-5 flex flex-col flex-grow">
                                     <h3
-                                        class="font-bold text-lg text-gray-900 mb-1 group-hover:text-brand-600 transition">
+                                        class="font-bold text-lg text-gray-900 mb-2 group-hover:text-brand-600 transition">
                                         {{ $product->name }}</h3>
-                                    <p class="text-sm text-gray-500 mb-4 flex-grow line-clamp-2">
-                                        {{ $product->description ?? '' }}</p>
+                                    {{-- <p class="text-sm text-gray-500 mb-4 flex-grow line-clamp-2">
+                                        {{ $product->description ?? '' }}</p> --}}
                                     <div
                                         class="flex items-center justify-between mt-auto pt-4 border-t border-gray-100">
                                         <div class="flex flex-col">
-                                            <span class="text-xs text-gray-400">建議售價</span>
-                                            <span
-                                                class="text-xl font-bold text-brand-600">{{ number_format($minPrice) }}
-                                                元</span>
+                                            <span class="text-xs text-gray-400">售價</span>
+                                            <div class="flex items-end gap-3">
+                                                <span class="text-2xl font-bold text-brand-600">NT$
+                                                    {{ number_format($minPrice) }}</span>
+                                                @if ($originalPrice)
+                                                    <span class="text-xl text-gray-400 line-through mb-1">NT$
+                                                        {{ number_format($originalPrice) }}</span>
+                                                @endif
+                                            </div>
                                         </div>
                                         <a href="{{ route('tenant.frontend.products.show', ['tenant' => tenant('id'), 'product_id' => $product->id]) }}"
                                             class="bg-gray-50 p-2 rounded-full hover:bg-brand-50 text-gray-400 hover:text-brand-600 transition">
