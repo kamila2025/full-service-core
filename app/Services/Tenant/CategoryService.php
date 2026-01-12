@@ -99,6 +99,13 @@ class CategoryService
   /**
    * 獲取分類列表
    */
+  public function getCategories(array $filters = []): \Illuminate\Database\Eloquent\Collection
+  {
+    return $this->categoryRepository->getCategories($filters);
+  }
+  /**
+   * 獲取分類 Tree 列表
+   */
   public function getCategoryTree(): array
   {
     $categories = $this->categoryRepository->all();

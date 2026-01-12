@@ -9,11 +9,12 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use App\Repositories\ProductRepository;
 use App\Services\Tenant\ProductService;
+use App\Services\Tenant\CategoryService;
 use Yajra\DataTables\Facades\DataTables;
 
 class TenantProductController extends BaseTenantController
 {
-  public function __construct(protected ProductService $productService, protected ProductRepository $productRepository) {}
+  public function __construct(protected ProductService $productService, protected ProductRepository $productRepository, protected CategoryService $categoryService) {}
 
   /**
    * 分類管理頁面
@@ -44,12 +45,7 @@ class TenantProductController extends BaseTenantController
     }
 
     return view('content.tenant.product.tenant-product', [
-      'categories' => Category::whereNotNull('parent_id')
-        ->whereHas('parent', function ($query) {
-          $query->whereNull('parent_id');
-        })
-        ->orderBy('sort', 'asc')
-        ->get(),
+      'categories' => $this->categoryService->getCategories(),
     ]);
   }
 
@@ -61,13 +57,7 @@ class TenantProductController extends BaseTenantController
     $this->authorizePermission(PermissionNameEnum::商品管理);
 
     return view('content.tenant.product.tenant-product-add', [
-      'categories' => Category::whereNotNull('parent_id')
-        ->whereHas('parent', function ($query) {
-          $query->whereNull('parent_id');
-        })
-        ->where('status', \App\Enums\Tenant\Category\CategoryStatusEnum::已發佈)
-        ->orderBy('sort', 'asc')
-        ->get(),
+      'categories' => $this->categoryService->getCategories(),
     ]);
   }
 
@@ -151,13 +141,7 @@ class TenantProductController extends BaseTenantController
 
     return view('content.tenant.product.tenant-product-add', [
       'product'     => $product,
-      'categories'  => Category::whereNotNull('parent_id')
-        ->whereHas('parent', function ($query) {
-          $query->whereNull('parent_id');
-        })
-        ->where('status', \App\Enums\Tenant\Category\CategoryStatusEnum::已發佈)
-        ->orderBy('sort', 'asc')
-        ->get(),
+      'categories'  => $this->categoryService->getCategories(),
     ]);
   }
 

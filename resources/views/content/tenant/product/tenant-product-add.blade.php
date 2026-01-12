@@ -753,9 +753,9 @@
                                 <label for="categories" class="form-label">商品分類</label>
                                 <select id="categories" class="select2 form-select" multiple>
                                     @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}"
-                                            {{ isset($product) ? ($product->categories->contains($category->id) ? 'selected' : '') : '' }}>
-                                            {{ $category->name }}
+                                        <option value="{{ $category['id'] }}"
+                                            {{ isset($product) ? ($product->categories->contains($category['id']) ? 'selected' : '') : '' }}>
+                                            {{ $category['name'] }}
                                         </option>
                                     @endforeach
                                 </select>
