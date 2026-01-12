@@ -56,6 +56,7 @@ class Products extends BaseComponent
       $variant = $this->product->variants->find($this->selectedVariant);
       return $variant ? $variant->price : $this->product->variants->min('price') ?? 0;
     }
+
     return $this->product->variants->min('price') ?? 0;
   }
 
@@ -65,6 +66,7 @@ class Products extends BaseComponent
       $variant = $this->product->variants->find($this->selectedVariant);
       return $variant && $variant->compare_at_price ? $variant->compare_at_price : null;
     }
+
     return null;
   }
 
@@ -77,10 +79,10 @@ class Products extends BaseComponent
       if ($firstCategory->parent_id) {
         $parentCategory = $firstCategory->parent;
         if ($parentCategory) {
-          $breadcrumbs[] = $parentCategory->name;
+          $breadcrumbs[] = $parentCategory;
         }
       }
-      $breadcrumbs[] = $firstCategory->name;
+      $breadcrumbs[] = $firstCategory;
     }
 
     $breadcrumbs[] = $this->product->name;

@@ -8,7 +8,8 @@
                 @foreach ($breadcrumb as $index => $crumb)
                     <i data-lucide="chevron-right" class="w-4 h-4 mx-2 text-gray-300"></i>
                     @if ($index < count($breadcrumb) - 1)
-                        <a href="#" class="hover:text-brand-600 transition">{{ $crumb }}</a>
+                        <a href="{{ route('tenant.frontend.categories.show', ['tenant' => tenant('id'), 'category_id' => $crumb->id]) }}"
+                            class="hover:text-brand-600 transition">{{ $crumb->name }}</a>
                     @else
                         <span class="text-gray-900 font-medium">{{ $crumb }}</span>
                     @endif
@@ -87,7 +88,7 @@
                     </div>
 
                     <!-- 規格選擇 (變體) -->
-                    @if ($product->variants->count() > 0)
+                    {{-- @if ($product->variants->count() > 0)
                         <div class="mb-6 space-y-4">
                             @foreach ($product->variants as $variant)
                                 <div>
@@ -109,7 +110,7 @@
                                 </div>
                             @endforeach
                         </div>
-                    @endif
+                    @endif --}}
 
                     <div class="mt-auto">
                         <hr class="border-gray-100 my-6">
