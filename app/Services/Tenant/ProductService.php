@@ -6,8 +6,11 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use App\Repositories\ProductRepository;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class ProductService
 {
@@ -47,6 +50,12 @@ class ProductService
     } catch (\Throwable $e) {
       DB::rollBack();
 
+      Log::error('創建商品失敗', [
+        'message'     => $e->getMessage(),
+        'attributes'  => $attributes,
+        'tenant_id'   => tenant('id'),
+      ]);
+
       throw $e;
     }
   }
@@ -61,15 +70,13 @@ class ProductService
 
       $product = $this->productRepository->findOrFail($id);
 
-      $updateData = [
+      $product->update([
         'name'                  => $attributes['name'],
         'description'           => $attributes['description'] ?? null,
         'image_url'             => $attributes['image_url'] ?? null,
         'inventory_management'  => $attributes['inventory_management'],
         'status'                => $attributes['status'],
-      ];
-
-      $product->update($updateData);
+      ]);
 
       if (isset($attributes['categories'])) {
         $product->categories()->sync($attributes['categories']);
@@ -89,6 +96,13 @@ class ProductService
     } catch (\Throwable $e) {
       DB::rollBack();
 
+      Log::error('更新商品失敗', [
+        'message'     => $e->getMessage(),
+        'product_id'  => $id,
+        'attributes'  => $attributes,
+        'tenant_id'   => tenant('id'),
+      ]);
+
       throw $e;
     }
   }
@@ -101,13 +115,17 @@ class ProductService
     try {
       DB::beginTransaction();
 
-      $product = $this->productRepository->findOrFail($id);
-
-      $product->delete();
+      $this->productRepository->delete($id);
 
       DB::commit();
     } catch (\Throwable $e) {
       DB::rollBack();
+
+      Log::error('刪除商品失敗', [
+        'message'     => $e->getMessage(),
+        'product_id'  => $id,
+        'tenant_id'   => tenant('id'),
+      ]);
 
       throw $e;
     }
@@ -119,21 +137,30 @@ class ProductService
   private function handleImageUpload(Product $product, array $images): void
   {
     $tenantId = tenant('id');
+    $manager = new ImageManager(new Driver());
 
     foreach ($images as $originalImageData) {
       // 解析 base64 資料
       $parsedImageData = $this->parseBase64Image($originalImageData['data']);
-      $extension = $this->getExtensionFromMimeType($parsedImageData['mime_type']);
 
-      // 產生唯一檔名
-      $filename = Str::uuid() . '.' . $extension;
+      // 使用 Intervention Image 處理圖片
+      $image = $manager->read($parsedImageData['data']);
+
+      // 壓縮圖片：限制最大寬度為 1920px，保持寬高比
+      $image->scaleDown(width: 1920);
+
+      // 轉換為 webp 格式並壓縮（品質 85%）
+      $webpData = $image->toWebp(85);
+
+      // 產生唯一檔名（統一使用 webp 格式）
+      $filename = Str::uuid() . '.webp';
 
       // 儲存路徑
       $storagePath = "tenants/{$tenantId}/products/{$filename}";
       $dbPath = "products/{$filename}";
 
-      // 儲存到 public disk
-      Storage::disk('public')->put($storagePath, $parsedImageData['data']);
+      // 儲存壓縮後的 webp 圖片
+      Storage::disk('public')->put($storagePath, $webpData);
 
       // 建立圖片記錄
       ProductImage::create([
@@ -141,7 +168,7 @@ class ProductService
         'filename'    => $filename,
         'path'        => $dbPath,
         'url'         => $dbPath,
-        'size'        => $originalImageData['size'],
+        'size'        => strlen($webpData),
       ]);
     }
 
@@ -175,20 +202,6 @@ class ProductService
     throw new \InvalidArgumentException('Invalid base64 image format');
   }
 
-  /**
-   * 從 MIME type 取得副檔名
-   */
-  private function getExtensionFromMimeType(string $mimeType): string
-  {
-    $extensions = [
-      'image/jpeg'  => 'jpg',
-      'image/png'   => 'png',
-      'image/gif'   => 'gif',
-      'image/webp'  => 'webp',
-    ];
-
-    return $extensions[$mimeType] ?? 'jpg';
-  }
 
   /**
    * 處理商品規格

@@ -45,7 +45,6 @@ $(function () {
       init: function () {
         // 如果是編輯模式，載入現有圖片
         if (isEdit && window.existingImages) {
-          console.log('Loading existing images:', window.existingImages);
           const dropzone = this;
           window.existingImages.forEach(function (imageData) {
             const mockFile = {
